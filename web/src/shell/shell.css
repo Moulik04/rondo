@@ -1,0 +1,414 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--chalk-bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+h1,
+h2 {
+  line-height: 1.12;
+  margin: 0 0 0.6em;
+  font-weight: 750;
+  font-stretch: 112%;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 1em;
+  max-width: var(--measure);
+}
+
+a {
+  color: var(--grass);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--bib);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  left: var(--gutter);
+  top: 8px;
+  z-index: 10;
+  background: var(--chalk-bg);
+  padding: 6px 10px;
+}
+
+/* Header */
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-block: 14px;
+}
+
+.site-title {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-size: var(--step-0);
+  letter-spacing: -0.005em;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.site-nav a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-weight: 600;
+  padding-block: 6px;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+}
+
+.site-nav a.active {
+  color: var(--ink);
+  border-bottom-color: var(--grass);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+  border-color: var(--ink-muted);
+}
+
+/* Main */
+
+.site-main {
+  flex: 1;
+  padding-block: 40px 64px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: 32px 48px;
+  align-items: center;
+  padding-bottom: 48px;
+}
+
+.hero__title {
+  font-size: var(--step-4);
+  font-weight: 820;
+  font-stretch: 120%;
+  letter-spacing: -0.02em;
+  max-width: 16ch;
+}
+
+.hero__lede {
+  line-height: 1.45;
+  color: var(--ink-muted);
+  max-width: 34em;
+  font-size: clamp(var(--step-0), 0.9rem + 0.6vw, var(--step-1));
+}
+
+.status {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bib);
+  flex: none;
+}
+
+/* The two halves of the pitch, split by a halfway line with a centre circle. */
+
+.halves {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+.halves::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--line);
+}
+
+.halves::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.half {
+  padding: 32px 56px 36px 0;
+}
+
+.half + .half {
+  padding: 32px 0 36px 56px;
+}
+
+.half h2 {
+  font-size: var(--step-2);
+}
+
+.go {
+  font-weight: 650;
+}
+
+/* Section pages */
+
+.section-page h1 {
+  font-size: var(--step-3);
+  font-stretch: 118%;
+}
+
+.section-page__lede {
+  line-height: 1.45;
+  color: var(--ink-muted);
+  font-size: clamp(var(--step-0), 0.9rem + 0.6vw, var(--step-1));
+}
+
+.empty {
+  margin-top: 32px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border-left: 3px solid var(--grass);
+  max-width: var(--measure);
+}
+
+.empty p:first-child {
+  font-weight: 700;
+  margin-bottom: 0.4em;
+}
+
+.empty p:last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 28px 36px;
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.site-footer__disclaimer {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.site-footer__heading {
+  font-size: var(--step--1);
+  font-stretch: 100%;
+  font-weight: 700;
+  margin: 1.2em 0 0.4em;
+  color: var(--ink);
+}
+
+.site-footer__credits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  max-width: var(--measure);
+}
+
+.site-footer__credits a {
+  color: var(--ink-muted);
+}
+
+.site-footer__credits a:hover {
+  color: var(--ink);
+}
+
+/* The rondo */
+
+.rondo-mark {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  justify-self: end;
+}
+
+.rondo-mark__ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.rondo-mark__pass {
+  stroke: var(--grass);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.75;
+  animation: rondo-pass 0.55s cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+}
+
+.rondo-mark__attacker {
+  fill: var(--grass);
+}
+
+.rondo-mark__defender {
+  fill: var(--bib);
+  stroke: var(--bib-ink);
+  stroke-width: 1.5;
+}
+
+.rondo-mark__ball {
+  fill: var(--ink);
+  opacity: 0;
+  animation: rondo-ball 0.3s ease-out 3.9s forwards;
+}
+
+@keyframes rondo-pass {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rondo-ball {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rondo-mark__pass,
+  .rondo-mark__ball {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  .rondo-mark__pass {
+    opacity: 0.75;
+  }
+}
+
+/* Narrow screens (down to 320px; checked at 390px) */
+
+@media (max-width: 720px) {
+  .site-main {
+    padding-block: 28px 48px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding-bottom: 32px;
+  }
+
+  .rondo-mark {
+    order: -1;
+    max-width: 168px;
+    justify-self: start;
+  }
+
+  .halves {
+    grid-template-columns: 1fr;
+  }
+
+  .halves::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    bottom: auto;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .halves::after {
+    left: 50%;
+  }
+
+  .half,
+  .half + .half {
+    padding: 28px 0;
+  }
+}

@@ -1,0 +1,38 @@
+# Provider data, databases, model runs and GPU bundles never go into git
+/data/
+/dist/
+web/public/data/*
+!web/public/data/README.md
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+
+# Notebooks: keep the notebooks, drop checkpoints
+.ipynb_checkpoints/
+
+# Web
+web/node_modules/
+web/dist/
+web/*.tsbuildinfo
+web/tsconfig.*.tsbuildinfo
+
+# Model files
+*.pt
+*.ckpt
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

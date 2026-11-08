@@ -1,0 +1,52 @@
+/* Rondo theme tokens. Light: chalk on a cool pitch-white. Dark: chalk on a night pitch. */
+
+:root {
+  --chalk-bg: #f3f5f2;
+  --surface: #e7ece8;
+  --ink: #14211b;
+  --ink-muted: #4a5a52;
+  --grass: #2f6b4f;
+  --line: #c9d3cc;
+  --bib: #e8b931;
+  --bib-ink: #14211b;
+
+  --font: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  /* Type scale: a perfect fourth (1.333) from a 17px base. */
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.4166rem;
+  --step-2: 1.888rem;
+  --step-3: 2.517rem;
+  --step-4: clamp(2.2rem, 1.4rem + 3.6vw, 3.356rem);
+
+  --gutter: 16px;
+  --measure: 68ch;
+  --max: 1120px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chalk-bg: #0f1a15;
+    --surface: #16241d;
+    --ink: #e6eee8;
+    --ink-muted: #a3b4ab;
+    --grass: #6fbf95;
+    --line: #2c3d34;
+    --bib: #f2c94c;
+    --bib-ink: #0f1a15;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --chalk-bg: #0f1a15;
+  --surface: #16241d;
+  --ink: #e6eee8;
+  --ink-muted: #a3b4ab;
+  --grass: #6fbf95;
+  --line: #2c3d34;
+  --bib: #f2c94c;
+  --bib-ink: #0f1a15;
+  color-scheme: dark;
+}

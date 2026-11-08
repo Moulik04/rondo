@@ -1,0 +1,81 @@
+[project]
+name = "rondo"
+version = "0.0.1"
+description = "Rondo · European football analytics: possession value and recruitment tools on open data."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Moulik Jain" }]
+# socceraction 1.5.3 requires Python < 3.13 and numpy < 2.
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+# PyTorch builds. Exactly one of these is installed:
+#   cpu   -> Mac (Apple MPS backend comes with the PyPI wheel) and CI (CPU-only wheel on Linux)
+#   cu126 -> Bridges-2 V100 nodes (CUDA 12.6 wheel on Linux)
+cpu = [
+    "torch>=2.11,<2.12",
+    "torch-geometric>=2.8,<2.9",
+]
+cu126 = [
+    "torch>=2.11,<2.12",
+    "torch-geometric>=2.8,<2.9",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rondo"]
+
+[tool.uv]
+default-groups = ["dev"]
+conflicts = [[{ extra = "cpu" }, { extra = "cu126" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cu126", extra = "cu126", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+extend-exclude = ["notebooks", "web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "D", "ANN"]
+ignore = ["D100", "D104", "D203", "D213"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "ANN"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--import-mode=importlib"]
+markers = [
+    "real: needs the full local data under data/ (run with `make test-real`)",
+]
