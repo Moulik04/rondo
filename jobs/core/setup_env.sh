@@ -5,12 +5,19 @@
 #
 # Any bundle works (they all carry the same uv.lock for a given commit); the hello bundle is
 # the smallest. The environment holds dependencies only: each job runs the code from its own
-# bundle. Override the location with RONDO_ENV=... (default: $PROJECT/rondo/env).
+# bundle.
+#
+# Where it goes: RONDO_ENV, default $HOME/rondo/env. The home directory has room for it; the
+# 10 GB project space doesn't (6.5 GB environment, and the project space also caps file
+# counts). uv's download cache and its Python go next to the environment; the cache is
+# cleared at the end. hello.sbatch uses the same default.
 set -euo pipefail
 
 BUNDLE=${1:?usage: bash setup_env.sh <bundle.tar.zst>}
 BUNDLE=$(realpath "$BUNDLE")
-ENV_DIR=${RONDO_ENV:-$PROJECT/rondo/env}
+ENV_DIR=${RONDO_ENV:-$HOME/rondo/env}
+BASE=$(dirname "$ENV_DIR")
+mkdir -p "$BASE"
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
@@ -34,10 +41,12 @@ if ! command -v uv >/dev/null; then
 fi
 uv --version
 
-# Keep uv's cache and Python downloads inside the project space, then clear the cache.
-export UV_CACHE_DIR=$PROJECT/rondo/uv-cache
-export UV_PYTHON_INSTALL_DIR=$PROJECT/rondo/python
+# Keep uv's cache and Python download next to the environment; the cache is cleared at the end.
+export UV_CACHE_DIR=$BASE/uv-cache
+export UV_PYTHON_INSTALL_DIR=$BASE/python
 export UV_PROJECT_ENVIRONMENT=$ENV_DIR
+echo "== space used under $BASE before building"
+du -sh "$BASE" 2>/dev/null || true
 
 echo "== building environment in $ENV_DIR (CUDA 12.6 PyTorch build)"
 cd "$WORK/code"
@@ -53,5 +62,5 @@ PY
 
 uv cache clean
 echo "== sizes"
-du -sh "$ENV_DIR" "$PROJECT/rondo/python" 2>/dev/null || true
+du -sh "$ENV_DIR" "$BASE/python" 2>/dev/null || true
 echo "done: environment at $ENV_DIR"

@@ -11,7 +11,7 @@
 set -euo pipefail
 
 BUNDLE=${1:?usage: sbatch -A <allocation> hello.sbatch <bundle.tar.zst>}
-ENV_DIR=${RONDO_ENV:-$PROJECT/rondo/env}
+ENV_DIR=${RONDO_ENV:-$HOME/rondo/env}
 RUNS=$PROJECT/rondo/runs
 mkdir -p "$RUNS"
 
