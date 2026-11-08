@@ -24,7 +24,7 @@ The README and the site footer copy these strings exactly.
 | ccby | Licence for the CC BY 4.0 datasets above. | https://creativecommons.org/licenses/by/4.0/ |
 <!-- END PUBLIC TEXT -->
 
-The StatsBomb logo must also appear wherever analysis is published (below). It is **not yet in place**: MJ needs to download it from StatsBomb's media pack.
+The StatsBomb logo must also appear wherever analysis is published (below). MJ downloaded it from StatsBomb's media pack into `web/public/brand/statsbomb/`. The README and the site footer show the default version on light backgrounds and the reversed version on dark ones, and a test checks both are in place.
 
 ---
 
@@ -65,7 +65,8 @@ The StatsBomb logo must also appear wherever analysis is published (below). It i
 - Ratings and reports use neutral, factual language about players and clubs.
 
 **Request etiquette**
-- §2.2 asks every user to register their name and email at www.statsbomb.com/resource-centre before using the data. That's MJ's personal information, so MJ registers himself, before Phase 1's download.
+- §2.2 asks every user to register their name and email at www.statsbomb.com/resource-centre before using the data. That's MJ's personal information, so MJ registers himself.
+  - Checked 8 Nov 2026: that address (and statsbomb.com's old free-data page) redirects to Hudl's StatsBomb product page (hudl.com/en_gb/products/statsbomb), which has only a sales demo form, no free-data registration. Rondo proceeds without registering.
 - Data is fetched once with a partial, sparse `git clone` pinned to one commit, then cached locally. No repeated or bulk API scraping.
 
 ## Wyscout open data (Pappalardo et al.)

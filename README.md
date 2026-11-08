@@ -15,13 +15,21 @@ Both sit on one tested data foundation built from StatsBomb and Wyscout event da
 
 ## Data credits
 
-- [Event and 360 data: StatsBomb open data.](https://github.com/statsbomb/open-data) The StatsBomb logo will appear here, as StatsBomb's terms require (pending).
+<a href="https://github.com/statsbomb/open-data"><picture><source media="(prefers-color-scheme: dark)" srcset="web/public/brand/statsbomb/hudl-statsbomb-logo-reversed.png"><img src="web/public/brand/statsbomb/hudl-statsbomb-logo-default.png" alt="Hudl StatsBomb" height="24"></picture></a>
+
+- [Event and 360 data: StatsBomb open data.](https://github.com/statsbomb/open-data) StatsBomb's terms require its logo, shown above.
 - [Event data: Wyscout open data (Pappalardo et al., 2019, Scientific Data 6:236), CC BY 4.0, converted and aggregated by Rondo.](https://doi.org/10.6084/m9.figshare.c.4415000.v5)
 - [Tracking and event data: DFL open data (Bassek, Rein, Weber & Memmert, 2025, Scientific Data 12:195), CC BY 4.0, converted and aggregated by Rondo.](https://doi.org/10.6084/m9.figshare.28196177.v1)
 - [Player identity and birth dates used for the minors rule: Wikidata (CC0).](https://www.wikidata.org)
 - [Licence for the CC BY 4.0 datasets above.](https://creativecommons.org/licenses/by/4.0/)
 
 Full terms, citations and how Rondo follows them: [docs/DATA_TERMS.md](docs/DATA_TERMS.md).
+
+## Built with
+
+- [socceraction](https://github.com/ML-KULeuven/socceraction) (MIT): SPADL conversion, and later VAEP features and labels.
+- [PyTorch Geometric](https://github.com/pyg-team/pytorch_geometric) (MIT): graph models.
+- [DuckDB](https://duckdb.org) and [Apache Arrow](https://arrow.apache.org): storage and queries.
 
 Rondo is non-commercial. Its code is MIT-licensed ([LICENSE](LICENSE)). That licence doesn't cover provider data or outputs derived from StatsBomb data, which may not be used commercially.
 

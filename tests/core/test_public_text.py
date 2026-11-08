@@ -53,3 +53,15 @@ def test_site_title_is_the_same_everywhere():
     assert README.read_text().splitlines()[0] == f"# {SITE_TITLE}"
     assert f'SITE_TITLE = "{SITE_TITLE}"' in WEB_CREDITS.read_text()
     assert f"<title>{SITE_TITLE}</title>" in WEB_INDEX.read_text()
+
+
+LOGOS = ["hudl-statsbomb-logo-default.png", "hudl-statsbomb-logo-reversed.png"]
+
+
+@pytest.mark.parametrize("logo", LOGOS)
+def test_statsbomb_logo_present_and_used(logo):
+    """StatsBomb's terms require its logo on every publication of analysis."""
+    assert (ROOT / "web" / "public" / "brand" / "statsbomb" / logo).is_file()
+    assert logo in README.read_text()
+    assert logo in WEB_CREDITS.read_text()
+    assert "STATSBOMB_LOGO" in (ROOT / "web" / "src" / "shell" / "Footer.tsx").read_text()

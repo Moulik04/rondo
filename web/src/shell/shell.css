@@ -269,6 +269,38 @@ a:hover {
 
 /* Footer */
 
+.site-footer__logo {
+  display: inline-block;
+  margin: 0.2em 0 0.4em;
+}
+
+.site-footer__logo img {
+  display: block;
+  height: 24px;
+  width: auto;
+}
+
+.logo-dark {
+  display: none !important;
+}
+
+:root[data-theme="dark"] .logo-light {
+  display: none !important;
+}
+
+:root[data-theme="dark"] .logo-dark {
+  display: block !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-light {
+    display: none !important;
+  }
+  :root:not([data-theme="light"]) .logo-dark {
+    display: block !important;
+  }
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   padding-block: 28px 36px;

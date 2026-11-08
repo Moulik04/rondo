@@ -1,0 +1,9 @@
+# GPU budget for Rondo on Bridges-2. Read by `make report` for the ledger.
+# The whole remaining allocation is Rondo's.
+# The allocation id is never written here.
+as_of: "2026-11-08"
+total_su: 474
+split:
+  value: 0.6   # Track A
+  scout: 0.4   # Track B
+rerun_reserve_fraction: 0.2  # each track keeps a fifth of its share for reruns
