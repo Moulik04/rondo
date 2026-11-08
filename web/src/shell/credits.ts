@@ -8,6 +8,12 @@ export const SITE_TITLE = "Rondo · European football analytics";
 export const DISCLAIMER =
   "Independent project by Moulik Jain. Not affiliated with any data provider, league, federation or club.";
 
+/** StatsBomb's terms require its logo wherever analysis of its data is published. */
+export const STATSBOMB_LOGO = {
+  light: "/brand/statsbomb/hudl-statsbomb-logo-default.png",
+  dark: "/brand/statsbomb/hudl-statsbomb-logo-reversed.png",
+};
+
 export interface Credit {
   key: string;
   text: string;
