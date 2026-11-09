@@ -73,7 +73,7 @@ Provider ids that share a person (one person under two ids within one provider):
 | Italian first division (`wyscout:524/181248`) | 686 | 93.1% | 93.1% | 43 | 4 |
 | Spanish first division (`wyscout:795/181144`) | 619 | 86.8% | 97.9% | 8 | 5 |
 
-## Rule 5, read per season
+## The minors rule, read per season
 
 People who were minors in at least one covered competition-season: 188. Of those, 73 are verified adults in at least one other covered competition-season: they may be named in output about those seasons only, never about the seasons when they were minors.
 

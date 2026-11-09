@@ -59,5 +59,5 @@ gpu-bundle: ## Bridges-2 bundle: make gpu-bundle MODEL=<track>/<name> SPLIT=<tra
 	@test -n "$(MODEL)" -a -n "$(SPLIT)" || { echo "usage: make gpu-bundle MODEL=<track>/<name> SPLIT=<train|eval>" >&2; exit 2; }
 	$(UV) run --locked python -m rondo.core.bundle --model $(MODEL) --split $(SPLIT)
 
-machines: ## Print the measured machine block
-	$(UV) run --locked python -m rondo.core.machine
+machines: ## Print the measured machine block (OUT=<file.md> writes it into that file)
+	$(UV) run --locked python -m rondo.core.machine $(if $(OUT),--write $(OUT),)

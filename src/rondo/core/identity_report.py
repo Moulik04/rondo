@@ -150,7 +150,7 @@ def coverage(parquet: Path) -> str:
         )
     lines += [
         "",
-        "## Rule 5, read per season",
+        "## The minors rule, read per season",
         "",
         f"People who were minors in at least one covered competition-season: {ever_minor:,}. Of "
         f"those, {mixed:,} are verified adults in at least one other covered competition-season: "
