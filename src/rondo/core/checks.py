@@ -510,27 +510,440 @@ def spadl_reconciles_passes_shots_carries(ctx: Ctx) -> CheckResult:
     )
 
 
+#: Each provider's SPADL actions trace to its own events table (id expression, table).
+_EVENT_SOURCES = {
+    "statsbomb": ("event_id", "events"),
+    "wyscout": ("cast(event_id as varchar)", "wy_events"),
+}
+
+
 @check
 def spadl_actions_trace_to_events(ctx: Ctx) -> CheckResult:
     """Every SPADL action's source event exists; only inserted dribbles have none."""
-    unknown = ctx.one(
-        """select count(*) from spadl_actions a
-           where a.original_event_id is not null
-             and not exists (select 1 from events e where e.event_id = a.original_event_id)"""
-    )
-    sourceless = ctx.q(
-        "select type_name, count(*) from spadl_actions where original_event_id is null "
-        "group by 1 order by 1"
-    )
-    problems = [f"{unknown} actions point to an event id not in events"] if unknown else []
-    problems += [f"{n} {t} actions with no source event" for t, n in sourceless if t != "dribble"]
-    inserted = sum(n for t, n in sourceless if t == "dribble")
+    providers = [r[0] for r in ctx.q("select distinct provider from spadl_actions order by 1")]
+    problems, summary = [], []
+    for prov in providers:
+        id_expr, table = _EVENT_SOURCES[prov]
+        unknown = ctx.one(
+            f"""select count(*) from spadl_actions a
+                where a.provider = '{prov}' and a.original_event_id is not null
+                  and a.original_event_id not in (select {id_expr} from {table})"""
+        )
+        sourceless = ctx.q(
+            f"select type_name, count(*) from spadl_actions where provider = '{prov}' "
+            "and original_event_id is null group by 1 order by 1"
+        )
+        if unknown:
+            problems.append(f"{prov}: {unknown} actions point to an event id not in {table}")
+        problems += [
+            f"{prov}: {n} {t} actions with no source event" for t, n in sourceless if t != "dribble"
+        ]
+        inserted = sum(n for t, n in sourceless if t == "dribble")
+        summary.append(f"{prov}: {inserted} inserted dribbles without a source event")
     return _result(
         "spadl_actions_trace_to_events",
-        "Every SPADL action's original_event_id exists in events; only the dribbles socceraction "
-        "inserts between actions (_add_dribbles) have none.",
+        "Every SPADL action's original_event_id exists in its provider's events table; only the "
+        "dribbles socceraction inserts between actions (_add_dribbles) have none.",
         problems,
-        f"{inserted} inserted dribbles without a source event",
+        "; ".join(summary),
+    )
+
+
+# --- Phase 2: Wyscout, cross-provider links, tracking -----------------------------------------
+
+#: Highest believable player speed in tracking data, m/s (about 43 km/h; the fastest recorded
+#: sprinters peak near 12.4 m/s). Speeds are measured over 5 frames (0.2 s).
+SPEED_CAP = 12.0
+SPEED_WINDOW_FRAMES = 5
+
+
+def _has(ctx: Ctx, *tables: str) -> bool:
+    names = {r[0] for r in ctx.q("select table_name from information_schema.tables")}
+    return all(t in names for t in tables)
+
+
+def _skip(name: str, description: str, needs: str) -> CheckResult:
+    return CheckResult(name, description, "SKIP", f"{needs} not built")
+
+
+@check
+def wy_counts_match_published(ctx: Ctx) -> CheckResult:
+    """Wyscout matches, events and players per competition equal Pappalardo et al., Table 1."""
+    from rondo.core.wyscout_ingest import COMPETITIONS
+
+    name, desc = (
+        "wy_counts_match_published",
+        "Matches, events and players per competition equal the published table (players = "
+        "distinct players in the competition's lineups, bench included).",
+    )
+    if not _has(ctx, "wy_matches", "wy_events", "wy_lineups"):
+        return _skip(name, desc, "wy_* tables")
+    if not ctx.check_section_2:
+        return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
+    got = {
+        c: (m, e, p)
+        for c, m, e, p in ctx.q(
+            """select m.competition_id, count(distinct m.match_id),
+                      (select count(*) from wy_events e join wy_matches mm using (match_id)
+                       where mm.competition_id = m.competition_id),
+                      (select count(distinct l.player_id) from wy_lineups l
+                       join wy_matches mm using (match_id)
+                       where mm.competition_id = m.competition_id)
+               from wy_matches m group by 1"""
+        )
+    }
+    problems = []
+    for cid, (suffix, *want) in COMPETITIONS.items():
+        have = got.get(cid, (0, 0, 0))
+        for label, h, w in zip(("matches", "events", "players"), have, want, strict=True):
+            if h != w:
+                problems.append(f"{suffix}: {h} {label}, published {w}")
+    tot = [sum(v[i] for v in got.values()) for i in range(2)]
+    return _result(name, desc, problems, f"{tot[0]} matches, {tot[1]} events in 7 competitions")
+
+
+@check
+def wy_totals_match_expected(ctx: Ctx) -> CheckResult:
+    """Totals against the expected counts (1,941 matches, 3,251,294 events, 4,299 players)."""
+    from rondo.core.wyscout_ingest import PUBLISHED_TOTALS
+
+    name, desc = (
+        "wy_totals_match_expected",
+        "Total matches and events equal the expected counts and the paper. The expected figure of 4,299 "
+        "players with birth dates is compared with the players file and listed if it differs.",
+    )
+    if not _has(ctx, "wy_matches", "wy_events", "wy_players", "wy_lineups"):
+        return _skip(name, desc, "wy_* tables")
+    if not ctx.check_section_2:
+        return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
+    m, e, pf, pl, bd = ctx.q(
+        """select (select count(*) from wy_matches), (select count(*) from wy_events),
+                  (select count(*) from wy_players),
+                  (select count(distinct player_id) from wy_lineups),
+                  (select count(*) from wy_players where birth_date is not null)"""
+    )[0]
+    want_m, want_e, want_p = PUBLISHED_TOTALS
+    hard = [
+        f"{lbl}: {h}, expected {w}"
+        for lbl, h, w in (("matches", m, want_m), ("events", e, want_e))
+        if h != w
+    ]
+    if hard:
+        return _result(name, desc, hard, "totals differ")
+    soft = []
+    if pf != want_p:
+        soft.append(
+            f"players file has {pf} players ({bd} with birth dates), not {want_p}; "
+            f"{pl} distinct players appear in lineups; the paper's per-competition player "
+            "counts sum to 4,362"
+        )
+    return _result(name, desc, soft, f"{m} matches, {e} events, {pf} players", allow=True)
+
+
+@check
+def wy_events_belong_to_matches(ctx: Ctx) -> CheckResult:
+    """Every Wyscout event belongs to a known match; event ids are unique."""
+    name, desc = (
+        "wy_events_belong_to_matches",
+        "Every Wyscout event belongs to a known match, and event ids are unique.",
+    )
+    if not _has(ctx, "wy_matches", "wy_events"):
+        return _skip(name, desc, "wy_* tables")
+    orphans = ctx.one("select count(*) from wy_events anti join wy_matches using (match_id)")
+    dups = ctx.one("select count(*) - count(distinct event_id) from wy_events")
+    problems = [f"{orphans} events with no match"] if orphans else []
+    problems += [f"{dups} duplicate event ids"] if dups else []
+    return _result(name, desc, problems, f"{ctx.one('select count(*) from wy_events')} events")
+
+
+@check
+def wy_goals_equal_score(ctx: Ctx) -> CheckResult:
+    """Wyscout SPADL goals per match (own goals included, shootout excluded) equal the score.
+
+    Two known gaps are classified and listed rather than failed: a goal scored directly from
+    a corner (socceraction converts the corner to a corner action, so SPADL has no scoring
+    shot; the raw corner carries goal tag 101), and a goal whose scoring event is missing from
+    the raw data (only the keeper's save attempt is tagged). Any other gap fails.
+    """
+    name, desc = (
+        "wy_goals_equal_score",
+        "Goals per match from Wyscout SPADL (own goals included, shootout excluded) equal the "
+        "score before any shootout. Goals direct from corners (no SPADL shot) and goals with "
+        "no scoring event in the raw data are listed; any other gap fails.",
+    )
+    if not _has(ctx, "wy_matches", "wy_events", "spadl_actions"):
+        return _skip(name, desc, "wy_* tables")
+    rows = ctx.q(
+        """
+        with sides as (
+          select match_id, home_team_id as team_id, away_team_id as opp, home_goals as goals
+          from wy_matches
+          union all
+          select match_id, away_team_id, home_team_id, away_goals from wy_matches),
+        sp as (
+          select s.match_id, s.team_id, s.goals,
+            count(a.action_id) filter (where (a.type_name like 'shot%'
+                  and a.result_name = 'success' and a.team_id = s.team_id)
+                  or (a.result_name = 'owngoal' and a.team_id = s.opp)) as spadl_goals
+          from sides s left join spadl_actions a
+            on a.provider = 'wyscout' and a.match_id = s.match_id and a.period_id < 5
+          group by all),
+        raw as (
+          select s.match_id, s.team_id,
+            count(e.event_id) filter (where e.team_id = s.team_id and e.type_name = 'Free Kick'
+                  and e.subtype_name in ('Corner', 'Free kick cross', 'Free Kick')
+                  and list_contains(e.tags, 101)) as corner_goals,
+            count(e.event_id) filter (where e.team_id = s.team_id
+                  and (e.type_name = 'Shot' or e.subtype_name in ('Free kick shot', 'Penalty'))
+                  and list_contains(e.tags, 101)) as shot_goals
+          from sides s left join wy_events e on e.match_id = s.match_id and e.period < 5
+          group by all)
+        select sp.match_id, sp.team_id, sp.goals, sp.spadl_goals, raw.corner_goals,
+               raw.shot_goals
+        from sp join raw using (match_id, team_id)
+        where sp.goals <> sp.spadl_goals order by 1, 2
+        """
+    )
+    hard, listed = [], []
+    for m, team, goals, sp, corner, shots in rows:
+        missing = goals - sp
+        if 0 < missing <= corner:
+            listed.append(f"match {m}, team {team}: {missing} goal(s) direct from a corner")
+        elif missing > 0 and shots + corner < goals:
+            listed.append(
+                f"match {m}, team {team}: {missing} goal(s) with no scoring event in the raw "
+                "data (only the keeper's save attempt is tagged)"
+            )
+        else:
+            hard.append(f"match {m}, team {team}: score {goals}, SPADL {sp}")
+    n = ctx.one("select count(*) from wy_matches")
+    bad_matches = len({r[0] for r in rows})
+    summary = f"{n - bad_matches} of {n} matches agree exactly"
+    if hard:
+        return _result(name, desc, hard + listed, summary)
+    return _result(name, desc, listed, summary, allow=True)
+
+
+@check
+def wy_coordinates_convert(ctx: Ctx) -> CheckResult:
+    """Wyscout 0-100 positions convert to SPADL metres as documented.
+
+    Every SPADL action from a Wyscout event starts at (x * 1.05, (100 - y) * 0.68), except
+    goal kicks (placed at (5, 34)) and keeper saves (moved to the keeper's goal), which
+    socceraction repositions on purpose. Corners sit at a corner flag and in-play penalties on
+    the spot. Penalties logged at the wrong end (raw x below 50) are listed.
+    """
+    name = "wy_coordinates_convert"
+    desc = (
+        "Wyscout 0-100 positions convert to SPADL as (x * 1.05, (100 - y) * 0.68), except goal "
+        "kicks and keeper saves, which socceraction repositions. Corners sit at a corner flag "
+        "and in-play penalties at the spot (94, 34); penalties logged at the wrong end are "
+        "listed."
+    )
+    if not _has(ctx, "wy_events", "spadl_actions"):
+        return _skip(name, desc, "wy_* tables")
+    off = ctx.q(
+        """select a.type_name, count(*) from spadl_actions a
+           join wy_events e on a.provider = 'wyscout'
+            and a.original_event_id = cast(e.event_id as varchar)
+           where a.type_name not in ('goalkick', 'keeper_save')
+             and (abs(a.start_x - e.x * 1.05) > 0.01
+                  or abs(a.start_y - (100 - e.y) * 0.68) > 0.01)
+           group by 1"""
+    )
+    corners = ctx.q(
+        """select count(*), count(*) filter (where not (x >= 95 and (y <= 5 or y >= 95)))
+           from wy_events where subtype_name = 'Corner'"""
+    )[0]
+    spot = ctx.q(
+        """select count(*), count(*) filter (where abs(a.start_x - 94.0) > 2
+                                              or abs(a.start_y - 34.0) > 2)
+           from spadl_actions a join wy_events e on a.provider = 'wyscout'
+            and a.original_event_id = cast(e.event_id as varchar)
+           where e.subtype_name = 'Penalty' and e.period < 5 and e.x >= 50"""
+    )[0]
+    pens = ctx.q(
+        """select period, count(*) filter (where x < 50), count(*) from wy_events
+           where subtype_name = 'Penalty' group by 1 order by 1"""
+    )
+    problems = [f"{n} {t} actions off the documented formula" for t, n in off]
+    if corners[1]:
+        problems.append(f"{corners[1]} of {corners[0]} corners not at a corner flag (raw)")
+    if spot[1]:
+        problems.append(f"{spot[1]} of {spot[0]} in-play penalties not within 2 m of the spot")
+    problems += [
+        f"period {p}: {bad} of {n} penalties logged at the wrong end (raw x < 50)"
+        for p, bad, n in pens
+        if bad
+    ]
+    n_ok = ctx.one(
+        """select count(*) from spadl_actions a join wy_events e on a.provider = 'wyscout'
+           and a.original_event_id = cast(e.event_id as varchar)
+           where a.type_name not in ('goalkick', 'keeper_save')"""
+    )
+    return _result(
+        name,
+        desc,
+        problems,
+        f"{n_ok} actions checked against their raw event; {corners[0]} corners and "
+        f"{spot[0]} in-play penalties checked against fixed positions",
+        allow=True,
+    )
+
+
+@check
+def match_xref_complete(ctx: Ctx) -> CheckResult:
+    """All 64 World Cup 2018 matches link one to one, with scores and sides agreeing."""
+    name, desc = (
+        "match_xref_complete",
+        "All 64 matches of the 2018 World Cup link one to one between StatsBomb and Wyscout, "
+        "and every link's score agrees.",
+    )
+    if not _has(ctx, "match_xref"):
+        return _skip(name, desc, "match_xref")
+    if not ctx.check_section_2:
+        return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
+    n, sb, wy, score = ctx.q(
+        "select count(*), count(distinct sb_match_id), count(distinct wy_match_id), "
+        "sum(score_agrees::int) from match_xref"
+    )[0]
+    problems = []
+    if not (n == sb == wy == 64):
+        problems.append(f"{n} links ({sb} StatsBomb, {wy} Wyscout matches), expected 64")
+    if score != n:
+        problems.append(f"{n - score} links where the score disagrees")
+    tiers = ", ".join(
+        f"{c} {k}"
+        for k, c in ctx.q("select confidence, count(*) from match_xref group by 1 order by 1")
+    )
+    return _result(name, desc, problems, f"{n} links ({tiers})")
+
+
+@check
+def tracking_frames_match_published(ctx: Ctx) -> CheckResult:
+    """Frames per DFL match equal Bassek et al. (2025), Table 1."""
+    from rondo.core.dfl_ingest import PUBLISHED
+
+    name, desc = (
+        "tracking_frames_match_published",
+        "Frames per DFL match equal the published table.",
+    )
+    if not _has(ctx, "tracking_frames", "tracking_meta"):
+        return _skip(name, desc, "tracking tables")
+    if not ctx.check_section_2:
+        return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
+    got = dict(
+        ctx.q(
+            "select match_id, count(distinct (period, frame)) from tracking_frames "
+            "where provider = 'dfl' group by 1"
+        )
+    )
+    meta = dict(ctx.q("select match_id, sum(n_frames) from tracking_meta group by 1"))
+    problems = []
+    for m, (frames, _) in PUBLISHED.items():
+        if got.get(m) != frames or meta.get(m) != frames:
+            problems.append(f"{m}: {got.get(m)} frames ({meta.get(m)} in meta), published {frames}")
+    return _result(name, desc, problems, f"{sum(got.values())} frames in {len(got)} matches")
+
+
+@check
+def tracking_frames_at_25hz(ctx: Ctx) -> CheckResult:
+    """Within each period, consecutive frames are one frame and 0.04 s apart."""
+    name, desc = (
+        "tracking_frames_at_25hz",
+        "Within each period, consecutive frames are exactly one frame number and 0.04 s apart.",
+    )
+    if not _has(ctx, "tracking_frames"):
+        return _skip(name, desc, "tracking tables")
+    rows = ctx.q(
+        """with t as (select distinct match_id, period, frame, time_s from tracking_frames),
+           d as (select match_id, period, frame - lag(frame) over w as df,
+                        time_s - lag(time_s) over w as dt
+                 from t window w as (partition by match_id, period order by frame))
+           select match_id, period, count(*) from d
+           where df is not null and (df <> 1 or abs(dt - 0.04) > 1e-6) group by 1, 2"""
+    )
+    rate = ctx.q("select distinct frame_rate from tracking_meta")
+    problems = [f"{m} period {p}: {n} irregular steps" for m, p, n in rows]
+    problems += [f"frame rate {r} in metadata" for (r,) in rate if r != 25]
+    return _result(name, desc, problems, "frame spacing checked in every period")
+
+
+@check
+def tracking_players_and_ball_in_play(ctx: Ctx) -> CheckResult:
+    """While the ball is in play, 22 players and the ball are present; exceptions listed."""
+    name, desc = (
+        "tracking_players_and_ball_in_play",
+        "While the ball is in play, every frame has 22 players and the ball; exceptions "
+        "(e.g. after a red card) are listed per match.",
+    )
+    if not _has(ctx, "tracking_frames"):
+        return _skip(name, desc, "tracking tables")
+    rows = ctx.q(
+        """with f as (select match_id, period, frame,
+                        count(*) filter (where object_id <> 'ball') as players,
+                        count(*) filter (where object_id = 'ball') as ball
+                 from tracking_frames where ball_alive group by 1, 2, 3)
+           select match_id, count(*),
+                  count(*) filter (where players <> 22), count(*) filter (where ball = 0),
+                  min(players), max(players)
+           from f group by 1 order by 1"""
+    )
+    reds = (
+        dict(
+            ctx.q(
+                "select match_id, count(*) from dfl_events where event_type = 'Caution' "
+                "and json_extract_string(attributes, '$.CardColor') = 'red' group by 1"
+            )
+        )
+        if _has(ctx, "dfl_events")
+        else {}
+    )
+    problems = [
+        f"{m}: {np} of {n} in-play frames without 22 players (range {lo}-{hi}), "
+        f"{nb} without the ball; red cards in the official events: {reds.get(m, 0)}"
+        for m, n, np, nb, lo, hi in rows
+        if np or nb
+    ]
+    alive = sum(r[1] for r in rows)
+    return _result(name, desc, problems, f"{alive} in-play frames", allow=True)
+
+
+@check
+def tracking_speed_cap(ctx: Ctx) -> CheckResult:
+    """No player exceeds the documented speed cap; violations listed, never deleted."""
+    name = "tracking_speed_cap"
+    desc = (
+        f"No player moves faster than {SPEED_CAP:g} m/s, measured over {SPEED_WINDOW_FRAMES} "
+        "frames (0.2 s). Violations are listed per match; no data is deleted."
+    )
+    if not _has(ctx, "tracking_frames"):
+        return _skip(name, desc, "tracking tables")
+    w = SPEED_WINDOW_FRAMES
+    rows = ctx.q(
+        f"""with p as (select match_id, period, object_id, frame, x, y,
+                         lag(x, {w}) over win as x0, lag(y, {w}) over win as y0,
+                         lag(frame, {w}) over win as f0
+                  from tracking_frames where object_id <> 'ball'
+                  window win as (partition by match_id, period, object_id order by frame)),
+           s as (select match_id, object_id,
+                        sqrt((x - x0) * (x - x0) + (y - y0) * (y - y0)) / ((frame - f0) / 25.0)
+                          as speed
+                 from p where f0 is not null and frame - f0 = {w})
+           select match_id, count(*) filter (where speed > {SPEED_CAP}),
+                  count(distinct object_id) filter (where speed > {SPEED_CAP}),
+                  max(speed), count(*)
+           from s group by 1 order by 1"""
+    )
+    problems = [
+        f"{m}: {n} measurements above {SPEED_CAP:g} m/s from {p} players (max {mx:.1f} m/s)"
+        for m, n, p, mx, _ in rows
+        if n
+    ]
+    total = sum(r[4] for r in rows)
+    over = sum(r[1] for r in rows)
+    return _result(
+        name, desc, problems, f"{total} speed measurements, {over} above the cap", allow=True
     )
 
 

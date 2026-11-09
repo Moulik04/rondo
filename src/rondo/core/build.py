@@ -1,6 +1,8 @@
-"""``make data``: fetch StatsBomb, build every shared table, then the DuckDB views.
+"""``make data``: fetch every source (pinned or checksummed), then build every shared table.
 
-Each step prints its own timing; the whole run is timed by the Makefile.
+Steps: StatsBomb fetch, ingest, minutes, SPADL; Wyscout fetch, ingest and SPADL; DFL fetch and
+tracking load; the World Cup 2018 cross-provider match links; DuckDB views. Each step prints
+its timing; the Makefile times the whole run.
 """
 
 from __future__ import annotations
@@ -11,12 +13,24 @@ import sys
 import time
 from pathlib import Path
 
-from rondo.core import minutes, spadl, statsbomb_fetch, statsbomb_ingest, store
+from rondo.core import (
+    dfl_fetch,
+    dfl_ingest,
+    minutes,
+    spadl,
+    statsbomb_fetch,
+    statsbomb_ingest,
+    store,
+    wyscout_fetch,
+    wyscout_ingest,
+    xref,
+)
+from rondo.core.figshare import fetched
 from rondo.core.paths import duckdb_path, parquet_dir, statsbomb_raw_dir
 from rondo.core.scope import STATSBOMB_COMMIT
 
 
-def _fetched(root: Path) -> bool:
+def _sb_fetched(root: Path) -> bool:
     src = root / "SOURCE.json"
     if not src.exists():
         return False
@@ -26,30 +40,43 @@ def _fetched(root: Path) -> bool:
     )
 
 
+def _step(name: str, t: float, detail: object = "") -> float:
+    now = time.perf_counter()
+    print(f"[{name}] {now - t:.0f}s {detail}".rstrip(), flush=True)
+    return now
+
+
 def main(argv: list[str] | None = None) -> int:
-    """Run the full StatsBomb build."""
+    """Run the full build."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--skip-spadl", action="store_true", help="skip the slowest step")
+    parser.add_argument("--only", choices=["statsbomb", "wyscout", "dfl", "xref"], default=None)
     args = parser.parse_args(argv)
-    raw, out = statsbomb_raw_dir(), parquet_dir()
-    t0 = time.perf_counter()
-    if _fetched(raw):
-        print("statsbomb: checkout matches SOURCE.json, not fetching")
-    else:
-        statsbomb_fetch.fetch(raw)
-    print(f"[fetch] {time.perf_counter() - t0:.0f}s", flush=True)
+    out = parquet_dir()
+    t0 = t = time.perf_counter()
+    do = (lambda s: True) if args.only is None else (lambda s: s == args.only)
 
-    t = time.perf_counter()
-    counts = statsbomb_ingest.build(raw / "open-data", out)
-    print(f"[ingest] {time.perf_counter() - t:.0f}s {counts}", flush=True)
-
-    t = time.perf_counter()
-    print(f"[minutes] {minutes.build(out)} {time.perf_counter() - t:.0f}s", flush=True)
-
-    if not args.skip_spadl:
-        t = time.perf_counter()
-        n = spadl.build(raw / "open-data", out)
-        print(f"[spadl] {n} actions {time.perf_counter() - t:.0f}s", flush=True)
+    if do("statsbomb"):
+        raw = statsbomb_raw_dir()
+        if not _sb_fetched(raw):
+            statsbomb_fetch.fetch(raw)
+        t = _step("fetch", t)
+        t = _step("ingest", t, statsbomb_ingest.build(raw / "open-data", out))
+        t = _step("minutes", t, minutes.build(out))
+        t = _step("spadl", t, f"{spadl.build(raw / 'open-data', out)} actions")
+    if do("wyscout"):
+        raw = wyscout_fetch.wyscout_raw_dir()
+        if not fetched(raw):
+            wyscout_fetch.fetch(raw)
+        t = _step("wyscout_fetch", t)
+        t = _step("wyscout", t, wyscout_ingest.build(raw, out))
+    if do("dfl"):
+        raw = dfl_fetch.dfl_raw_dir()
+        if not fetched(raw):
+            dfl_fetch.fetch(raw)
+        t = _step("dfl_fetch", t)
+        t = _step("dfl", t, dfl_ingest.build(raw, out))
+    if do("xref"):
+        t = _step("xref", t, xref.build(out))
 
     views = store.build(out, duckdb_path())
     print(f"[duckdb] {duckdb_path()}: {len(views)} views; total {time.perf_counter() - t0:.0f}s")

@@ -24,6 +24,26 @@ from rondo.core.paths import parquet_dir, statsbomb_raw_dir
 from rondo.core.scope import SCOPE, CompetitionSeason
 from rondo.core.statsbomb_parse import parse_360, parse_events, parse_lineups, period_lengths
 
+#: The tables this module writes (others, e.g. ``wy_*``, belong to other providers).
+STATSBOMB_TABLES = {
+    "competitions",
+    "matches",
+    "match_periods",
+    "teams",
+    "players",
+    "lineups",
+    "lineup_positions",
+    "events",
+    "shots",
+    "shot_freeze_frames",
+    "passes",
+    "carries",
+    "pressures",
+    "defensive_actions",
+    "frames_360",
+    "visible_areas_360",
+}
+
 #: Matches per row group in partitioned files.
 BATCH_MATCHES = 20
 
@@ -119,7 +139,8 @@ def build(
 ) -> dict[str, int]:
     """Build every StatsBomb table under ``out``; return row counts per table."""
     data = checkout / "data"
-    for name in [*schemas.PARTITIONED, *schemas.SINGLE]:
+    own = [n for n in [*schemas.PARTITIONED, *schemas.SINGLE] if n in STATSBOMB_TABLES]
+    for name in own:
         target = out / name if name in schemas.PARTITIONED else out / f"{name}.parquet"
         if target.is_dir():
             reset_dir(target)

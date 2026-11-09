@@ -105,6 +105,8 @@ def performance(log: Path, raw: Path, parquet: Path, db: Path) -> str:
     """Render the performance note from the ``make data`` log and measured sizes."""
     text = log.read_text() if log.exists() else ""
     real = re.search(r"([\d.]+) real", text)
+    user = re.search(r"([\d.]+) user", text)
+    total = re.search(r"^\[duckdb\].*total (\d+)s", text, re.M)
     rss = re.search(r"(\d+)\s+maximum resident set size", text)
     steps = re.findall(r"^\[(\w+)\].*?(\d+)s", text, re.M)
     gb = 1e9
@@ -116,9 +118,17 @@ def performance(log: Path, raw: Path, parquet: Path, db: Path) -> str:
         "",
         "| Measure | Value |",
         "|---|---|",
-        f"| Wall time, whole build | {float(real.group(1)) / 60:.1f} min |"
+        f"| Build time (the build's own clock, which pauses while the Mac sleeps) | "
+        f"{int(total.group(1)) / 60:.1f} min |"
+        if total
+        else "| Build time | unmeasured |",
+        f"| CPU time (user) | {float(user.group(1)) / 60:.1f} min |"
+        if user
+        else "| CPU time (user) | unmeasured |",
+        f"| Elapsed wall clock (`/usr/bin/time`; includes any time the Mac slept) | "
+        f"{float(real.group(1)) / 60:.1f} min |"
         if real
-        else "| Wall time, whole build | unmeasured |",
+        else "| Elapsed wall clock | unmeasured |",
         f"| Peak memory (max resident set) | {int(rss.group(1)) / gb:.2f} GB |"
         if rss
         else "| Peak memory (max resident set) | unmeasured |",
@@ -137,6 +147,8 @@ def performance(log: Path, raw: Path, parquet: Path, db: Path) -> str:
     lines += [
         f"| Raw StatsBomb checkout (JSON files) | {_du(raw / 'open-data' / 'data') / gb:.2f} GB |",
         f"| Raw git objects (partial clone) | {_du(raw / 'open-data' / '.git') / gb:.2f} GB |",
+        f"| Raw Wyscout (zips and extracted JSON) | {_du(raw.parent / 'wyscout') / gb:.2f} GB |",
+        f"| Raw DFL (XML) | {_du(raw.parent / 'dfl') / gb:.2f} GB |",
         f"| Parquet (`data/parquet/`) | {_du(parquet) / gb:.2f} GB |",
         f"| DuckDB file (views only) | {db.stat().st_size / 1e6:.1f} MB |"
         if db.exists()
@@ -166,6 +178,21 @@ def main() -> int:
         print(f"wrote {out / 'performance.md'}")
     else:
         print("no data/parquet yet (run make data); skipping statsbomb_summary.md")
+    if (pq / "match_xref.parquet").exists():
+        from rondo.core.provider_comparison import render
+
+        (out / "provider_comparison.md").write_text(render(pq))
+        print(f"wrote {out / 'provider_comparison.md'}")
+    if (pq / "wy_events").exists() and (pq / "tracking_meta.parquet").exists():
+        from rondo.core.sources_summary import render as render_sources
+
+        (out / "sources_summary.md").write_text(render_sources(pq))
+        print(f"wrote {out / 'sources_summary.md'}")
+    if (pq / "wy_events").exists():
+        from rondo.core.wyscout_audit import render as render_audit
+
+        (out / "wyscout_coordinate_audit.md").write_text(render_audit(pq))
+        print(f"wrote {out / 'wyscout_coordinate_audit.md'}")
     budget = yaml.safe_load((REPO_ROOT / "jobs" / "core" / "budget.yaml").read_text())
     all_runs = runs.load_runs(data_dir() / "runs")
     (out / "gpu_ledger.md").write_text(runs.render_ledger(all_runs, budget))
