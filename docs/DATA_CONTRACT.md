@@ -333,3 +333,188 @@ StatsBomb's 25 positions map to seven groups:
 Two judgement calls:
 - **Right and Left Midfield go to W.** In StatsBomb's lineups these are the wide players of a four-man midfield.
 - **Secondary Striker goes to ST.** It's a forward role, not an attacking midfielder.
+
+---
+
+## Phase 2: Wyscout open data (raw tables, prefixed `wy_`)
+
+Source: figshare collection 10.6084/m9.figshare.c.4415000.v5, recorded with checksums in `data/raw/wyscout/SOURCE.json`.
+- **Names:** 899 player names and 8 team names in the raw files carry literal `\uXXXX` escapes. Rondo decodes them and removes soft hyphens (U+00AD).
+- **Coordinates** (`x`, `y`, `end_x`, `end_y`): Wyscout's 0–100 scale as given, as percentages of the pitch's length and width. y runs from the top, and each team attacks left to right.
+- **Wyscout SPADL:** `spadl_actions` with `provider = 'wyscout'`, converted by socceraction 1.5.3. A SPADL action starts at (x × 1.05, (100 − y) × 0.68), except that socceraction places goal kicks at (5, 34) and moves keeper saves to the keeper's goal. `original_event_id` is the Wyscout event id as text, or null for inserted dribbles.
+
+### wy_competitions
+
+**Grain:** one row per competition. **Key:** `competition_id`. Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| competition_id | int32 | Wyscout id |
+| name, area_name, format, type | string | |
+
+### wy_matches
+
+**Grain:** one row per match. **Key:** `match_id`. Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| match_id, competition_id, season_id, round_id | int32 | |
+| gameweek | int16 | |
+| date_utc | timestamp | kick-off, UTC |
+| label, status, duration, venue | string | |
+| home_team_id, away_team_id | int32 | |
+| home_score, away_score | int16 | score after 90 minutes |
+| home_score_ht, away_score_ht | int16 | half-time |
+| home_score_et, away_score_et | int16 | cumulative after extra time; 0 if none was played |
+| home_score_p, away_score_p | int16 | penalty shootout |
+| home_goals, away_goals | int16 | goals before any shootout: the larger of the score and the extra-time score |
+
+### wy_teams
+
+**Grain:** one row per team. **Key:** `team_id`. Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| team_id | int32 | |
+| name, official_name, city, area_name, type | string | names decoded |
+
+### wy_players
+
+**Grain:** one row per player in Wyscout's players file. **Key:** `player_id`. Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| player_id | int32 | |
+| short_name, first_name, middle_name, last_name | string | decoded |
+| birth_date | date | **internal only** (minors rule); never published |
+| role | string | GK, DF, MD, FW |
+| foot | string | |
+| height, weight | int16 | cm, kg as given |
+| birth_area, passport_area | string | |
+| current_team_id, current_national_team_id | int32 | nullable (the raw file sometimes holds the string "null") |
+
+### wy_lineups
+
+**Grain:** one row per player listed in a match (lineup or bench). **Key:** (`match_id`, `player_id`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| match_id, team_id, player_id | int32 | |
+| status | string | `lineup` or `bench` |
+| goals, own_goals, assists, yellow_cards, red_cards | int16 | as given on the match sheet |
+| sub_in_minute, sub_out_minute | int16 | null if not substituted. Six team-matches store substitutions as the string "null"; they have none here. |
+
+### wy_events
+
+**Grain:** one row per Wyscout event. **Key:** `event_id`. Partitioned by competition and season.
+
+| Column | Type | Notes |
+|---|---|---|
+| event_id | int64 | |
+| match_id | int32 | |
+| period | int16 | 1, 2, 3 and 4 (extra time), 5 (shootout) |
+| match_period | string | Wyscout's `1H`, `2H`, `E1`, `E2`, `P` |
+| event_sec | float64 | seconds since the period start |
+| type_id, subtype_id | int16 | |
+| type_name, subtype_name | string | e.g. `Free Kick` / `Corner` |
+| team_id, player_id | int32 | `player_id` null where Wyscout gives 0 |
+| x, y, end_x, end_y | float32 | 0–100, as given |
+| tags | list\<int32\> | Wyscout tag ids (e.g. 101 goal, 102 own goal, 1801 accurate) |
+
+## Phase 2: cross-provider links
+
+### match_xref
+
+**Grain:** one row per match linked across providers (so far: the 64 matches of the 2018 World Cup, StatsBomb and Wyscout). **Key:** `sb_match_id` (and `wy_match_id`, also unique). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| competition | string | |
+| sb_match_id, wy_match_id | int32 | |
+| sb_date | date | StatsBomb's local match date |
+| wy_date_utc | timestamp | |
+| date_diff_days | int16 | |
+| sb_home_team_id, sb_away_team_id | int32 | |
+| wy_team_for_sb_home, wy_team_for_sb_away | int32 | the Wyscout team on each StatsBomb side |
+| sides_agree | bool | both providers name the same team as home |
+| score_agrees | bool | |
+| names_matched | int16 | team names that agree exactly (0–2) |
+| method | string | the evidence used |
+| confidence | string | `high` (both names match, same date) or `medium` |
+
+### team_xref
+
+**Grain:** one row per StatsBomb–Wyscout team pair seen in linked matches. **Key:** (`sb_team_id`, `wy_team_id`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| sb_team_id, wy_team_id | int32 | |
+| sb_name, wy_name | string | |
+| n_matches | int16 | linked matches with this pair |
+| by_name, by_elimination | int16 | how the pair was aligned in those matches |
+
+## Phase 2: tracking
+
+### tracking_frames
+
+**Grain:** one row per object (each player, and the ball) per frame. **Key:** (`provider`, `match_id`, `period`, `frame`, `object_id`). Partitioned by provider and match: `tracking_frames/provider=…/match_id=…/`.
+
+| Column | Type | Notes |
+|---|---|---|
+| provider | string | `dfl` (Gradient later) |
+| match_id | string | provider's id, e.g. `J03WMX` (DFL-MAT-J03WMX) |
+| period | int16 | |
+| frame | int32 | provider frame number. DFL restarts per period (10,000 in the first half, 100,000 in the second). |
+| time_s | float64 | seconds since the period start |
+| object_id | string | provider person id (e.g. `DFL-OBJ-…`), or `ball` |
+| team_id | string | null for the ball |
+| jersey_no | int16 | |
+| x, y | float32 | **metres, origin at the centre spot**, x along the length (−52.5 to 52.5 on a 105 m pitch), y across it from bottom to top. Positions are absolute: teams swap ends at half-time (see `tracking_meta.home_attacks`). |
+| z | float32 | ball height in metres; null for players |
+| provider_speed | float32 | DFL's own speed value as given (units unverified; Rondo computes speeds from positions) |
+| ball_alive | bool | the ball is in play |
+| ball_owning_team_id | string | nullable |
+
+DFL frames were loaded with kloppy 3.19's Sportec loader in its `sportec` coordinate system.
+
+### tracking_meta
+
+**Grain:** one row per match and period. **Key:** (`provider`, `match_id`, `period`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| provider, match_id, competition | string | |
+| match_date | date | |
+| home_team_id, home_team_name, away_team_id, away_team_name | string | |
+| pitch_length, pitch_width | float32 | metres |
+| frame_rate | float32 | Hz |
+| period | int16 | |
+| first_frame, last_frame, n_frames | int32 | |
+| start_s, end_s | float64 | seconds |
+| home_attacks | string | `left` or `right`: which way the home team attacks in this period |
+
+### dfl_events
+
+**Grain:** one row per `<Event>` element in DFL's raw event XML. **Key:** (`match_id`, `event_id`). Not partitioned. Read with lxml rather than kloppy, which synthesises some events and loses others' types.
+
+| Column | Type | Notes |
+|---|---|---|
+| match_id, event_id | string | |
+| event_time | string | ISO time as given |
+| event_type | string | DFL type (the child element), e.g. `Play`, `ShotAtGoal`, `Caution`, `Delete` |
+| event_subtype | string | nullable (the grandchild element, e.g. `Pass`) |
+| team_id, player_id | string | nullable |
+| x, y | float32 | as given by the event feed (metres, origin at a corner; not the tracking frame) |
+| attributes | string | JSON of the event's attributes |
+
+### dfl_lineups
+
+**Grain:** one row per player on a DFL match sheet. **Key:** (`match_id`, `player_id`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| match_id, team_id, team_name, player_id | string | |
+| first_name, last_name | string | |
+| jersey_no | int16 | |
+| starting | bool | |
+| starting_position | string | kloppy's position name |

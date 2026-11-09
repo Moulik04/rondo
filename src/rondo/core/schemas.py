@@ -273,6 +273,163 @@ SPADL_ACTIONS = _schema(
     ("bodypart_name", s),
 )
 
+# --- Wyscout open data (raw tables, prefixed wy_) -------------------------------------------
+
+i64 = pa.int64()
+
+WY_COMPETITIONS = _schema(
+    ("competition_id", i32), ("name", s), ("area_name", s), ("format", s), ("type", s)
+)
+
+WY_MATCHES = _schema(
+    ("match_id", i32),
+    ("competition_id", i32),
+    ("season_id", i32),
+    ("round_id", i32),
+    ("gameweek", i16),
+    ("date_utc", pa.timestamp("s")),
+    ("label", s),
+    ("status", s),
+    ("duration", s),
+    ("venue", s),
+    ("home_team_id", i32),
+    ("away_team_id", i32),
+    ("home_score", i16),
+    ("away_score", i16),
+    ("home_score_ht", i16),
+    ("away_score_ht", i16),
+    ("home_score_et", i16),
+    ("away_score_et", i16),
+    ("home_score_p", i16),
+    ("away_score_p", i16),
+    ("home_goals", i16),
+    ("away_goals", i16),
+)
+
+WY_TEAMS = _schema(
+    ("team_id", i32),
+    ("name", s),
+    ("official_name", s),
+    ("city", s),
+    ("area_name", s),
+    ("type", s),
+)
+
+WY_PLAYERS = _schema(
+    ("player_id", i32),
+    ("short_name", s),
+    ("first_name", s),
+    ("middle_name", s),
+    ("last_name", s),
+    ("birth_date", pa.date32()),
+    ("role", s),
+    ("foot", s),
+    ("height", i16),
+    ("weight", i16),
+    ("birth_area", s),
+    ("passport_area", s),
+    ("current_team_id", i32),
+    ("current_national_team_id", i32),
+)
+
+WY_LINEUPS = _schema(
+    ("match_id", i32),
+    ("team_id", i32),
+    ("player_id", i32),
+    ("status", s),
+    ("goals", i16),
+    ("own_goals", i16),
+    ("assists", i16),
+    ("yellow_cards", i16),
+    ("red_cards", i16),
+    ("sub_in_minute", i16),
+    ("sub_out_minute", i16),
+)
+
+WY_EVENTS = _schema(
+    ("event_id", i64),
+    ("match_id", i32),
+    ("period", i16),
+    ("match_period", s),
+    ("event_sec", f64),
+    ("type_id", i16),
+    ("type_name", s),
+    ("subtype_id", i16),
+    ("subtype_name", s),
+    ("team_id", i32),
+    ("player_id", i32),
+    ("x", f32),
+    ("y", f32),
+    ("end_x", f32),
+    ("end_y", f32),
+    ("tags", pa.list_(i32)),
+)
+
+# --- Tracking (DFL now; Gradient later) -------------------------------------------------------
+
+TRACKING_FRAMES = _schema(
+    ("provider", s),
+    ("match_id", s),
+    ("period", i16),
+    ("frame", i32),
+    ("time_s", f64),
+    ("object_id", s),
+    ("team_id", s),
+    ("jersey_no", i16),
+    ("x", f32),
+    ("y", f32),
+    ("z", f32),
+    ("provider_speed", f32),
+    ("ball_alive", b),
+    ("ball_owning_team_id", s),
+)
+
+TRACKING_META = _schema(
+    ("provider", s),
+    ("match_id", s),
+    ("competition", s),
+    ("match_date", pa.date32()),
+    ("home_team_id", s),
+    ("home_team_name", s),
+    ("away_team_id", s),
+    ("away_team_name", s),
+    ("pitch_length", f32),
+    ("pitch_width", f32),
+    ("frame_rate", f32),
+    ("period", i16),
+    ("first_frame", i32),
+    ("last_frame", i32),
+    ("n_frames", i32),
+    ("start_s", f64),
+    ("end_s", f64),
+    ("home_attacks", s),
+)
+
+DFL_EVENTS = _schema(
+    ("match_id", s),
+    ("event_id", s),
+    ("event_time", s),
+    ("event_type", s),
+    ("event_subtype", s),
+    ("team_id", s),
+    ("player_id", s),
+    ("x", f32),
+    ("y", f32),
+    ("attributes", s),
+)
+
+DFL_LINEUPS = _schema(
+    ("match_id", s),
+    ("team_id", s),
+    ("team_name", s),
+    ("player_id", s),
+    ("first_name", s),
+    ("last_name", s),
+    ("jersey_no", i16),
+    ("starting", b),
+    ("starting_position", s),
+)
+
 #: Tables partitioned by competition and season (spadl_actions also by provider).
 PARTITIONED: dict[str, pa.Schema] = {
     "events": EVENTS,
@@ -284,6 +441,7 @@ PARTITIONED: dict[str, pa.Schema] = {
     "defensive_actions": DEFENSIVE_ACTIONS,
     "frames_360": FRAMES_360,
     "visible_areas_360": VISIBLE_AREAS_360,
+    "wy_events": WY_EVENTS,
 }
 
 #: Single-file tables.
@@ -296,6 +454,60 @@ SINGLE: dict[str, pa.Schema] = {
     "lineups": LINEUPS,
     "lineup_positions": LINEUP_POSITIONS,
     "player_match_minutes": PLAYER_MATCH_MINUTES,
+    "wy_competitions": WY_COMPETITIONS,
+    "wy_matches": WY_MATCHES,
+    "wy_teams": WY_TEAMS,
+    "wy_players": WY_PLAYERS,
+    "wy_lineups": WY_LINEUPS,
+    "tracking_meta": TRACKING_META,
+    "dfl_events": DFL_EVENTS,
+    "dfl_lineups": DFL_LINEUPS,
 }
 
-ALL: dict[str, pa.Schema] = {**SINGLE, **PARTITIONED, "spadl_actions": SPADL_ACTIONS}
+
+# --- Cross-provider links ----------------------------------------------------------------
+
+MATCH_XREF = pa.schema(
+    [
+        ("competition", s),
+        ("sb_match_id", i32),
+        ("wy_match_id", i32),
+        ("sb_date", pa.date32()),
+        ("wy_date_utc", pa.timestamp("s")),
+        ("date_diff_days", i16),
+        ("sb_home_team_id", i32),
+        ("sb_away_team_id", i32),
+        ("wy_team_for_sb_home", i32),
+        ("wy_team_for_sb_away", i32),
+        ("sides_agree", b),
+        ("score_agrees", b),
+        ("names_matched", i16),
+        ("method", s),
+        ("confidence", s),
+    ]
+)
+
+TEAM_XREF = pa.schema(
+    [
+        ("sb_team_id", i32),
+        ("wy_team_id", i32),
+        ("sb_name", s),
+        ("wy_name", s),
+        ("n_matches", i16),
+        ("by_name", i16),
+        ("by_elimination", i16),
+    ]
+)
+
+SINGLE["match_xref"] = MATCH_XREF
+SINGLE["team_xref"] = TEAM_XREF
+
+#: Partitioned by provider and match (Hive-style ``provider=…/match_id=…``).
+TRACKING: dict[str, pa.Schema] = {"tracking_frames": TRACKING_FRAMES}
+
+ALL: dict[str, pa.Schema] = {
+    **SINGLE,
+    **PARTITIONED,
+    **TRACKING,
+    "spadl_actions": SPADL_ACTIONS,
+}

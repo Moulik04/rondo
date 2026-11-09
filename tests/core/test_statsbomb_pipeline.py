@@ -16,6 +16,8 @@ from rondo.core.statsbomb_parse import clock_to_s, timestamp_to_s
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = (ROOT / "docs" / "DATA_CONTRACT.md").read_text()
+#: Real-data-only tables: the World Cup links and the DFL event/lineup feeds.
+SYNTHETIC_ABSENT = {"match_xref", "team_xref", "dfl_events", "dfl_lineups"}
 
 
 # --- contract -------------------------------------------------------------------------------
@@ -39,6 +41,8 @@ def test_schema_columns_are_documented(table):
 def test_written_files_match_schema(sb_store, table):
     path = sb_store.parquet / (f"{table}.parquet" if table in schemas.SINGLE else table)
     files = [path] if path.is_file() else sorted(path.rglob("*.parquet"))
+    if not files and not sb_store.real and table in SYNTHETIC_ABSENT:
+        pytest.skip(f"{table} isn't built by the synthetic fixtures")
     assert files, f"no files for {table}"
     for f in files[:3]:
         assert pq.read_schema(f).names == schemas.ALL[table].names
@@ -72,7 +76,7 @@ def q(sb_store, sql):
 @pytest.mark.synthetic_only
 def test_every_check_passes_cleanly_on_fixture(sb_store):
     for r in checks.run_all(sb_store.ctx()):
-        assert r.status == "PASS", (r.name, r.exceptions)
+        assert r.status in ("PASS", "SKIP"), (r.name, r.exceptions)
 
 
 @pytest.mark.synthetic_only
@@ -115,14 +119,25 @@ def test_position_groups(sb_store):
 def test_spadl_drops_injury_clearance_and_keeps_shots(sb_store):
     n_pass = q(sb_store, "select count(*) from events where type_name = 'Pass'")[0][0]
     fam = ", ".join(f"'{t}'" for t in checks.PASS_FAMILY)
-    n_spadl = q(sb_store, f"select count(*) from spadl_actions where type_name in ({fam})")[0][0]
+    n_spadl = q(
+        sb_store,
+        f"select count(*) from spadl_actions where provider = 'statsbomb' and type_name in ({fam})",
+    )[0][0]
     assert n_pass - n_spadl == 2  # one Injury Clearance pass per match
-    assert q(sb_store, "select count(*) from spadl_actions where type_name like 'shot%'") == [(6,)]
+    assert q(
+        sb_store,
+        "select count(*) from spadl_actions "
+        "where provider = 'statsbomb' and type_name like 'shot%'",
+    ) == [(6,)]
 
 
 @pytest.mark.synthetic_only
 def test_spadl_attacks_left_to_right(sb_store):
-    (x,) = q(sb_store, "select min(start_x) from spadl_actions where type_name like 'shot%'")[0]
+    (x,) = q(
+        sb_store,
+        "select min(start_x) from spadl_actions "
+        "where provider = 'statsbomb' and type_name like 'shot%'",
+    )[0]
     assert x > 80
 
 

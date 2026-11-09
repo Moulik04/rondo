@@ -28,6 +28,7 @@ Full terms, citations and how Rondo follows them: [docs/DATA_TERMS.md](docs/DATA
 ## Built with
 
 - [socceraction](https://github.com/ML-KULeuven/socceraction) (MIT): SPADL conversion, and later VAEP features and labels.
+- [kloppy](https://github.com/PySport/kloppy) (BSD-3-Clause): loading the DFL tracking data.
 - [PyTorch Geometric](https://github.com/pyg-team/pytorch_geometric) (MIT): graph models.
 - [DuckDB](https://duckdb.org) and [Apache Arrow](https://arrow.apache.org): storage and queries.
 

@@ -11,6 +11,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb>=1.1",
     "fastapi>=0.115",
+    "kloppy>=3.15",
     "orjson>=3.10",
     "multimethod<2",  # pandera 0.17 (via socceraction) imports multimethod.overload, removed in 2.0
     "pandas>=2.1,<3",

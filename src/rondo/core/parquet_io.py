@@ -60,6 +60,16 @@ class PartitionWriter:
         self._writer.write_table(to_table(rows, self.schema))
         self.rows_written += len(rows)
 
+    def write_arrow(self, table: pa.Table) -> None:
+        """Write an already-built Arrow table (columnar; for very large row counts)."""
+        if table.num_rows == 0:
+            return
+        if self._writer is None:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._writer = pq.ParquetWriter(self.path, self.schema, compression=COMPRESSION)
+        self._writer.write_table(table.cast(self.schema))
+        self.rows_written += table.num_rows
+
     def close(self) -> None:
         """Close the file if one was opened."""
         if self._writer is not None:
