@@ -193,6 +193,11 @@ def main() -> int:
 
         (out / "wyscout_coordinate_audit.md").write_text(render_audit(pq))
         print(f"wrote {out / 'wyscout_coordinate_audit.md'}")
+    if (pq / "player_age_status.parquet").exists():
+        from rondo.core.identity_report import write_all
+
+        for path in write_all(pq, out):
+            print(f"wrote {path}")
     budget = yaml.safe_load((REPO_ROOT / "jobs" / "core" / "budget.yaml").read_text())
     all_runs = runs.load_runs(data_dir() / "runs")
     (out / "gpu_ledger.md").write_text(runs.render_ledger(all_runs, budget))

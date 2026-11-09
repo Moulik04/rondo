@@ -520,3 +520,72 @@ DFL frames were loaded with kloppy 3.19's Sportec loader in its `sportec` coordi
 | jersey_no | int16 | |
 | starting | bool | |
 | starting_position | string | kloppy's position name |
+
+---
+
+## Phase 3: identity and the minors rule
+
+These tables hold birth dates and identity evidence. They live under `data/parquet/` like the rest and are **never published**; anything published goes through `core.public.display_ok`.
+
+### team_wikidata
+
+**Grain:** one row per provider team. **Key:** (`provider`, `team_id`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| provider | string | `statsbomb`, `wyscout`, `dfl` |
+| team_id | string | provider id, as text |
+| team_name | string | |
+| kind | string | `club` or `national` |
+| qid | string | Wikidata item, e.g. `Q7156` |
+| qid_label, qid_description | string | as Wikidata gives them |
+| search_text | string | the search that found it |
+| rank | int16 | position among the search results |
+| candidates | string | the first five results, for review |
+
+### player_xref
+
+**Grain:** one row per provider player: StatsBomb players who played, Wyscout lineup players, DFL match-sheet players. **Key:** (`provider`, `provider_player_id`). Not partitioned.
+
+| Column | Type | Notes |
+|---|---|---|
+| person_id | string | Rondo's id for the person: `wd:<QID>` when linked to Wikidata with high or medium confidence, else `<provider>:<id>` of one of their provider ids. Low-confidence links are never merged into a person. |
+| provider, provider_player_id | string | |
+| name | string | the provider's display name |
+| qid | string | Wikidata item, or null |
+| status | string | `linked`, `ambiguous`, `weak name match`, `unmatched` |
+| method | string | the evidence behind the link |
+| confidence | string | `high`, `medium`, `low` (low: name search alone; never used to verify an age) |
+| name_score | float32 | 0–1 |
+| team_support | int16 | how many of the player's teams list them as a member around those dates |
+| dob_agrees | bool | the Wyscout birth date equals Wikidata's (null if not compared) |
+| n_candidates | int16 | |
+| same_match_partner | string | the other provider's id from the 2018 World Cup same-match pairing |
+
+### wikidata_people
+
+**Grain:** one row per Wikidata person linked to a provider player. **Key:** `qid`. Not partitioned. Internal only.
+
+| Column | Type | Notes |
+|---|---|---|
+| qid | string | |
+| label | string | shortest name in the eight languages fetched |
+| birth_date | date | |
+| birth_date_precision | int16 | Wikidata precision: 11 day, 10 month, 9 year |
+| names | string | JSON list of labels and aliases |
+
+### player_age_status
+
+**Grain:** one row per person per competition-season they appear in. **Key:** (`person_id`, `competition_season`). Not partitioned. Internal only.
+
+| Column | Type | Notes |
+|---|---|---|
+| person_id | string | |
+| competition_season | string | `statsbomb:<competition>/<season>`, `wyscout:<competition>/<season>`, `dfl:<DFL-COM-id>/2022-23` |
+| provider | string | |
+| competition_id, season_id | int32 | null for DFL |
+| window_start, window_end | date | that competition-season's first and last match in the data |
+| status | string | `verified_adult`, `minor_during_season`, `unverified` |
+| birth_date_low, birth_date_high | date | the range of possible birth dates (equal when exact) |
+| birth_date_source | string | `wikidata`, `wyscout` or `wikidata+wyscout` |
+| note | string | `no birth date`, `sources disagree`, or null |

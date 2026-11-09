@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -945,6 +946,142 @@ def tracking_speed_cap(ctx: Ctx) -> CheckResult:
     return _result(
         name, desc, problems, f"{total} speed measurements, {over} above the cap", allow=True
     )
+
+
+# --- Phase 3: identity and the minors rule ----------------------------------------------------
+
+
+@check
+def same_match_links_agree(ctx: Ctx) -> CheckResult:
+    """Wikidata links agree with the 2018 World Cup same-match pairs; disagreements listed."""
+    name, desc = (
+        "same_match_links_agree",
+        "Where a 2018 World Cup StatsBomb player and their same-match Wyscout partner are both "
+        "linked to Wikidata, the two links name the same person. Disagreements are listed "
+        "(they are never merged).",
+    )
+    if not _has(ctx, "player_xref"):
+        return _skip(name, desc, "player_xref")
+    rows = ctx.q(
+        """select a.provider_player_id, b.provider_player_id, a.qid, b.qid
+           from player_xref a join player_xref b
+             on a.provider = 'statsbomb' and b.provider = 'wyscout'
+            and a.same_match_partner = b.provider_player_id
+            and b.same_match_partner = a.provider_player_id
+           where a.qid is not null and b.qid is not null"""
+    )
+    bad = [f"StatsBomb {a} -> {qa}, Wyscout {b} -> {qb}" for a, b, qa, qb in rows if qa != qb]
+    n = len(rows)
+    rate = (n - len(bad)) / n if n else 0.0
+    return _result(name, desc, bad, f"{n - len(bad)} of {n} pairs agree ({rate:.1%})", allow=True)
+
+
+@check
+def one_person_per_provider_id(ctx: Ctx) -> CheckResult:
+    """Persons appearing under two ids within one provider are listed."""
+    name, desc = (
+        "one_person_per_provider_id",
+        "Each person has one id per provider; persons under two or more ids within one "
+        "provider are listed.",
+    )
+    if not _has(ctx, "player_xref"):
+        return _skip(name, desc, "player_xref")
+    rows = ctx.q(
+        """select provider, person_id, list(provider_player_id order by provider_player_id)
+           from player_xref where qid is not null
+           group by 1, 2 having count(*) > 1 order by 1, 2"""
+    )
+    return _result(
+        name,
+        desc,
+        [f"{p}: {person} has ids {', '.join(ids)}" for p, person, ids in rows],
+        f"{len(rows)} persons with more than one id in a provider",
+        allow=True,
+    )
+
+
+@check
+def every_person_has_age_status(ctx: Ctx) -> CheckResult:
+    """Every person with an appearance has an age status for each competition-season."""
+    name, desc = (
+        "every_person_has_age_status",
+        "Every linked or unlinked provider player has an age status for each "
+        "competition-season they appear in.",
+    )
+    if not _has(ctx, "player_xref", "player_age_status"):
+        return _skip(name, desc, "player_age_status")
+    missing = ctx.one(
+        "select count(distinct person_id) from player_xref "
+        "where person_id not in (select person_id from player_age_status)"
+    )
+    total = ctx.one("select count(distinct person_id) from player_age_status")
+    return _result(
+        name,
+        desc,
+        [f"{missing} persons without any age status"] if missing else [],
+        f"{total} persons with age statuses",
+    )
+
+
+@check
+def low_links_never_verify_age(ctx: Ctx) -> CheckResult:
+    """Low-confidence links neither merge persons nor supply a Wikidata birth date."""
+    name, desc = (
+        "low_links_never_verify_age",
+        "A provider player linked to Wikidata only by name search (low confidence) is a person "
+        "of their own, and their age status never rests on a Wikidata birth date.",
+    )
+    if not _has(ctx, "player_xref", "player_age_status"):
+        return _skip(name, desc, "player_age_status")
+    merged = ctx.one(
+        """select count(*) from player_xref x
+           where x.confidence = 'low'
+             and (select count(*) from player_xref y where y.person_id = x.person_id) > 1"""
+    )
+    via_wd = ctx.one(
+        """select count(distinct a.person_id) from player_age_status a
+           join player_xref x using (person_id)
+           where x.confidence = 'low' and a.birth_date_source like '%wikidata%'"""
+    )
+    n = ctx.one("select count(*) from player_xref where confidence = 'low'")
+    problems = [f"{merged} low links share a person with another record"] if merged else []
+    problems += [f"{via_wd} persons with a low link have a Wikidata birth date"] if via_wd else []
+    return _result(name, desc, problems, f"{n} low-confidence links checked")
+
+
+@check
+def no_uncleared_names_published(ctx: Ctx) -> CheckResult:
+    """No name of a player not cleared by display_ok appears under web/public/ or reports/."""
+    from rondo.core import public
+    from rondo.core.paths import REPO_ROOT
+
+    name, desc = (
+        "no_uncleared_names_published",
+        "No name of a player that core.public.display_ok doesn't clear appears in any text "
+        "file under web/public/ or reports/. Matches are reported as "
+        "file and count only.",
+    )
+    if not _has(ctx, "player_xref", "player_age_status"):
+        return _skip(name, desc, "player_age_status")
+    pq = _parquet_of(ctx)
+    blocked = public.blocked_names(pq)
+    hits = public.scan([REPO_ROOT / "web" / "public", REPO_ROOT / "reports"], blocked)
+    per_file: dict[str, int] = {}
+    for f, _ in hits:
+        per_file[f] = per_file.get(f, 0) + 1
+    return _result(
+        name,
+        desc,
+        [f"{f}: {n} uncleared name(s)" for f, n in sorted(per_file.items())],
+        f"{len(blocked)} names blocked; web/public/ and reports/ scanned",
+    )
+
+
+def _parquet_of(ctx: Ctx) -> Path:
+    """Return the Parquet folder the context's views read (from the player_xref view)."""
+    sql = ctx.one("select sql from duckdb_views() where view_name = 'player_xref'")
+    m = re.search(r"read_parquet\('([^']+)/player_xref\.parquet'\)", str(sql))
+    return Path(m.group(1)) if m else parquet_dir()
 
 
 def run_all(ctx: Ctx) -> list[CheckResult]:

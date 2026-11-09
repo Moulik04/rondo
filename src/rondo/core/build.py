@@ -1,7 +1,8 @@
 """``make data``: fetch every source (pinned or checksummed), then build every shared table.
 
 Steps: StatsBomb fetch, ingest, minutes, SPADL; Wyscout fetch, ingest and SPADL; DFL fetch and
-tracking load; the World Cup 2018 cross-provider match links; DuckDB views. Each step prints
+tracking load; the World Cup 2018 cross-provider match links; player identity (Wikidata, cached
+under data/raw/wikidata/) and age status; DuckDB views. Each step prints
 its timing; the Makefile times the whole run.
 """
 
@@ -14,8 +15,11 @@ import time
 from pathlib import Path
 
 from rondo.core import (
+    ages,
     dfl_fetch,
     dfl_ingest,
+    identity,
+    identity_teams,
     minutes,
     spadl,
     statsbomb_fetch,
@@ -49,7 +53,9 @@ def _step(name: str, t: float, detail: object = "") -> float:
 def main(argv: list[str] | None = None) -> int:
     """Run the full build."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--only", choices=["statsbomb", "wyscout", "dfl", "xref"], default=None)
+    parser.add_argument(
+        "--only", choices=["statsbomb", "wyscout", "dfl", "xref", "identity"], default=None
+    )
     args = parser.parse_args(argv)
     out = parquet_dir()
     t0 = t = time.perf_counter()
@@ -77,6 +83,10 @@ def main(argv: list[str] | None = None) -> int:
         t = _step("dfl", t, dfl_ingest.build(raw, out))
     if do("xref"):
         t = _step("xref", t, xref.build(out))
+    if do("identity"):
+        t = _step("identity_teams", t, identity_teams.build(out, log=False))
+        t = _step("identity", t, identity.build(out, log=False))
+        t = _step("ages", t, ages.build(out))
 
     views = store.build(out, duckdb_path())
     print(f"[duckdb] {duckdb_path()}: {len(views)} views; total {time.perf_counter() - t0:.0f}s")

@@ -499,6 +499,64 @@ TEAM_XREF = pa.schema(
     ]
 )
 
+# --- Identity (Phase 3) ---------------------------------------------------------------------
+
+TEAM_WIKIDATA = _schema(
+    ("provider", s),
+    ("team_id", s),
+    ("team_name", s),
+    ("kind", s),
+    ("qid", s),
+    ("qid_label", s),
+    ("qid_description", s),
+    ("search_text", s),
+    ("rank", i16),
+    ("candidates", s),
+)
+SINGLE["team_wikidata"] = TEAM_WIKIDATA
+
+PLAYER_XREF = _schema(
+    ("person_id", s),
+    ("provider", s),
+    ("provider_player_id", s),
+    ("name", s),
+    ("qid", s),
+    ("status", s),
+    ("method", s),
+    ("confidence", s),
+    ("name_score", f32),
+    ("team_support", i16),
+    ("dob_agrees", b),
+    ("n_candidates", i16),
+    ("same_match_partner", s),
+)
+SINGLE["player_xref"] = PLAYER_XREF
+
+WIKIDATA_PEOPLE = _schema(
+    ("qid", s),
+    ("label", s),
+    ("birth_date", pa.date32()),
+    ("birth_date_precision", i16),
+    ("names", s),
+)
+SINGLE["wikidata_people"] = WIKIDATA_PEOPLE
+
+PLAYER_AGE_STATUS = _schema(
+    ("person_id", s),
+    ("competition_season", s),
+    ("provider", s),
+    ("competition_id", i32),
+    ("season_id", i32),
+    ("window_start", pa.date32()),
+    ("window_end", pa.date32()),
+    ("status", s),
+    ("birth_date_low", pa.date32()),
+    ("birth_date_high", pa.date32()),
+    ("birth_date_source", s),
+    ("note", s),
+)
+SINGLE["player_age_status"] = PLAYER_AGE_STATUS
+
 SINGLE["match_xref"] = MATCH_XREF
 SINGLE["team_xref"] = TEAM_XREF
 
