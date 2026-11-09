@@ -3,8 +3,10 @@
 - ``reports/identity_coverage.md``: per competition-season, the share of players linked to
   Wikidata and the share ``verified_adult``; minors as counts only, never names.
 - ``reports/xref_audit.csv``: 100 links, a random sample stratified by provider and
-  competition, with the evidence for each, for MJ to hand-check 20. Names of anyone
-  :func:`rondo.core.public.display_ok` doesn't clear are withheld; birth dates never appear.
+  competition, with the evidence for each, for MJ to hand-check 20. A name is withheld unless
+  :func:`rondo.core.public.display_ok` clears the person for that row's competition-season;
+  birth dates never appear. MJ's marks live in ``docs/audit/xref_hand_check.csv`` (ids only),
+  and the coverage report computes precision from them.
   The unmasked copy goes to ``data/audit/xref_audit_full.csv`` (gitignored, never published).
 - ``reports/team_wikidata.csv``: every provider team and its Wikidata item.
 """
@@ -12,16 +14,60 @@
 from __future__ import annotations
 
 import csv
+import math
 import random
 from collections import defaultdict
 from pathlib import Path
 
 from rondo.core import public, store
-from rondo.core.paths import data_dir
+from rondo.core.paths import REPO_ROOT, data_dir
 
 SEED = 20261109
 SAMPLE = 100
 WITHHELD = "[withheld: not cleared by display_ok]"
+HAND_CHECK = REPO_ROOT / "docs" / "audit" / "xref_hand_check.csv"
+
+
+def lower_bound(k: int, n: int, alpha: float = 0.05) -> float:
+    """One-sided exact (Clopper-Pearson) lower confidence bound for k successes in n."""
+    if k == 0:
+        return 0.0
+
+    def tail(p: float) -> float:  # P(X >= k | p)
+        return sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(k, n + 1))
+
+    lo, hi = 0.0, k / n
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if tail(mid) < alpha else (lo, mid)
+    return lo
+
+
+def hand_check(parquet: Path, path: Path = HAND_CHECK) -> list[str]:
+    """Markdown lines for MJ's hand check: marks that still match a current link count."""
+    if not path.exists():
+        return ["No hand-check marks recorded: precision unmeasured."]
+    marks = list(csv.DictReader(path.open()))
+    con = store.connect()
+    store.create_views(con, parquet)
+    links = {
+        (p, pid): q
+        for p, pid, q in con.execute(
+            "select provider, provider_player_id, qid from player_xref where qid is not null"
+        ).fetchall()
+    }
+    con.close()
+    current = [m for m in marks if links.get((m["provider"], m["provider_player_id"])) == m["qid"]]
+    n, k = len(current), sum(m["correct"].strip().lower() == "yes" for m in current)
+    stale = len(marks) - n
+    if not n:
+        return ["No hand-check mark matches a current link: precision unmeasured."]
+    return [
+        f"Links marked by hand: {n} ({stale} older marks no longer match a link). Correct: {k}. "
+        f"Precision on the marked links: {k / n:.1%}; exact one-sided 95% lower bound: "
+        f"{lower_bound(k, n):.1%}. The target is at least 98%; a sample of {n} can't show that "
+        "on its own, only that the links checked were right.",
+    ]
 
 
 def coverage(parquet: Path) -> str:
@@ -68,9 +114,7 @@ def coverage(parquet: Path) -> str:
         """select person_id, list(distinct status) from player_age_status group by 1"""
     ).fetchall()
     con.close()
-    strict_only = sum(
-        1 for _, sts in persons if "minor_during_season" in sts and "verified_adult" in sts
-    )
+    mixed = sum(1 for _, sts in persons if "minor_during_season" in sts and "verified_adult" in sts)
     ever_minor = sum(1 for _, sts in persons if "minor_during_season" in sts)
     lines = [
         "# Player identity and age coverage",
@@ -106,12 +150,16 @@ def coverage(parquet: Path) -> str:
         )
     lines += [
         "",
-        "## The strict reading of rule 5",
+        "## Rule 5, read per season",
         "",
         f"People who were minors in at least one covered competition-season: {ever_minor:,}. Of "
-        f"those, {strict_only:,} are verified adults in at least one other covered "
-        "competition-season: they could be named in output about those seasons under a "
-        "per-season reading, and are never named under the strict reading Rondo applies now.",
+        f"those, {mixed:,} are verified adults in at least one other covered competition-season: "
+        "they may be named in output about those seasons only, never about the seasons when "
+        "they were minors.",
+        "",
+        "## Hand check of the links",
+        "",
+        *hand_check(parquet),
     ]
     return "\n".join(lines) + "\n"
 
@@ -157,7 +205,7 @@ def audit(parquet: Path) -> tuple[list[dict], list[dict]]:
         for r in rng.sample(strata[key], min(alloc[key], len(strata[key]))):
             i += 1
             prov, cs, pid, name, person, qid, label, method, conf, ns, ts, dob, partner = r
-            ok = public.display_ok(person, parquet=parquet)
+            ok = public.display_ok(person, [cs], parquet=parquet)
             row = {
                 "audit_id": i,
                 "provider": prov,
