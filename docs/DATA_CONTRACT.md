@@ -472,6 +472,8 @@ Source: figshare collection 10.6084/m9.figshare.c.4415000.v5, recorded with chec
 | x, y | float32 | **metres, origin at the centre spot**, x along the length (−52.5 to 52.5 on a 105 m pitch), y across it from bottom to top. Positions are absolute: teams swap ends at half-time (see `tracking_meta.home_attacks`). |
 | z | float32 | ball height in metres; null for players |
 | provider_speed | float32 | DFL's own speed value as given (units unverified; Rondo computes speeds from positions) |
+
+**Speeds.** Rondo computes speed from positions over 5 frames (0.2 s). Any measurement above 12 m/s is a tracking glitch (check `tracking_speed_cap`): physical metrics exclude it and report how many were excluded. The positions themselves are kept as given.
 | ball_alive | bool | the ball is in play |
 | ball_owning_team_id | string | nullable |
 

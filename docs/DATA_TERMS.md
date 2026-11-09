@@ -24,7 +24,7 @@ The README and the site footer copy these strings exactly.
 | ccby | Licence for the CC BY 4.0 datasets above. | https://creativecommons.org/licenses/by/4.0/ |
 <!-- END PUBLIC TEXT -->
 
-The StatsBomb logo must also appear wherever analysis is published (below). MJ downloaded it from StatsBomb's media pack into `web/public/brand/statsbomb/`. The README and the site footer show the default version on light backgrounds and the reversed version on dark ones, and a test checks both are in place.
+The StatsBomb logo must also appear wherever analysis is published (below). MJ downloaded it from StatsBomb's media pack. The two versions the site uses are in `web/public/brand/statsbomb/`; the rest of the media-pack files are kept in `docs/brand/statsbomb/` so they aren't deployed. The README and the site footer show the default version on light backgrounds and the reversed version on dark ones, and a test checks both are in place.
 
 ---
 
@@ -50,12 +50,12 @@ The StatsBomb logo must also appear wherever analysis is published (below). MJ d
 
 **Redistribution, derived numbers and player names**
 - Raw StatsBomb files are never committed or served.
-- *Reading Rondo follows (MJ to confirm):*
+- *Reading Rondo follows (confirmed by MJ on 9 Nov 2026):*
   - Published output carries Rondo's own analysis: model values, ratings, aggregates, rankings and charts.
   - Exported JSON (`web/public/data/`) must not be a bulk copy of StatsBomb events. Pages may show what a chart needs (for example, the shots in one match report), but no page or file republishes the event stream, the 360 frames, or StatsBomb's own fields wholesale (such as its xG value per shot).
-  - This changes how the shot-explorer and match-report pages are scoped.
+  - This narrows the shot-explorer and match-report pages: they show what one chart needs, never an explorable dump of StatsBomb shots.
 - Player names are not restricted by these terms. Rondo names players only where the minors rule allows.
-- Copying data to MJ's own Bridges-2 allocation for training is MJ's own use, not provision to a third party (Rondo's reading; MJ to confirm).
+- Copying data to MJ's own Bridges-2 allocation for training is MJ's own use, not provision to a third party (confirmed by MJ on 9 Nov 2026).
 
 **Non-commercial**
 - Rondo is a non-commercial portfolio project: no ads, no paid features, no selling outputs.
