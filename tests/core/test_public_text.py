@@ -1,4 +1,4 @@
-"""The disclaimer and data credits are copied exactly from docs/DATA_TERMS.md (rule 10)."""
+"""The disclaimer and data credits are copied exactly from docs/DATA_TERMS.md."""
 
 import re
 from pathlib import Path
@@ -65,3 +65,28 @@ def test_statsbomb_logo_present_and_used(logo):
     assert logo in README.read_text()
     assert logo in WEB_CREDITS.read_text()
     assert "STATSBOMB_LOGO" in (ROOT / "web" / "src" / "shell" / "Footer.tsx").read_text()
+
+
+def test_locally_excluded_files_are_never_tracked():
+    """Nothing matching the checkout's local exclude list (.git/info/exclude) is committed."""
+    import shutil
+    import subprocess
+
+    if shutil.which("git") is None or not (ROOT / ".git").exists():
+        pytest.skip("not a git checkout (e.g. a GPU bundle)")
+    common = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "--path-format=absolute", "--git-common-dir"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    exclude = Path(common) / "info" / "exclude"
+    if not exclude.exists():
+        pytest.skip("no local exclude list")
+    leaked = subprocess.run(
+        ["git", "-C", str(ROOT), "ls-files", "-c", "-i", f"--exclude-from={exclude}"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.split()
+    assert not leaked, f"locally excluded files are tracked: {leaked}"

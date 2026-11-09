@@ -1,6 +1,7 @@
 """Measure the local machine and print its generated Markdown block.
 
-Run with ``python -m rondo.core.machine`` (``make machines``).
+Run with ``python -m rondo.core.machine`` (``make machines``). ``--write FILE`` replaces the
+block in a Markdown file.
 Everything in the generated block is measured here; nothing is typed by hand.
 """
 
@@ -19,7 +20,7 @@ from pathlib import Path
 BEGIN = "<!-- BEGIN GENERATED: python -m rondo.core.machine -->"
 END = "<!-- END GENERATED -->"
 
-#: Phase 0 asks for at least this much free disk before data work.
+#: Data work needs at least this much free disk.
 MIN_FREE_DISK_GB = 60.0
 
 

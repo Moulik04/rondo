@@ -19,7 +19,7 @@ STATSBOMB_REPO = "https://github.com/statsbomb/open-data.git"
 
 @dataclass(frozen=True)
 class CompetitionSeason:
-    """One StatsBomb competition-season in scope, with the counts §2 expects."""
+    """One StatsBomb competition-season in scope, with its expected counts."""
 
     competition_id: int
     season_id: int
@@ -35,7 +35,7 @@ def _cs(
     return CompetitionSeason(competition_id, season_id, scope, group, n, n360)
 
 
-# Barcelona's La Liga seasons from 2004/05 to 2020/21. §2 states only the group total
+# Barcelona's La Liga seasons from 2004/05 to 2020/21. The source gives only the group total
 # (486 matches, 35 with 360 frames, all in 2020/21), so the check runs at group level.
 _BARCELONA_SEASONS = [37, 38, 39, 40, 41, 21, 22, 23, 24, 25, 26, 2, 1, 4, 42, 90]
 _UCL_FINAL_SEASONS = [44, 37, 39, 41, 21, 22, 23, 24, 25, 26, 27, 2, 1, 4]

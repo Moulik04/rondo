@@ -3,7 +3,8 @@
 Each check is a named function returning a :class:`CheckResult`. Status is one of:
 
 - ``PASS``: no problems;
-- ``EXCEPTIONS``: a check whose rule allows listed exceptions (outliers or known gaps); every exception is counted in the report;
+- ``EXCEPTIONS``: a check whose rule allows listed exceptions (outliers or
+  known gaps); every exception is counted in the report;
 - ``FAIL``: the data contradicts the contract. ``make check`` exits 1.
 
 ``python -m rondo.core.checks`` runs everything and writes ``reports/data_quality.md``.
@@ -94,7 +95,7 @@ def check(fn: Callable[[Ctx], CheckResult]) -> Callable[[Ctx], CheckResult]:
 
 @check
 def match_counts_per_competition_season(ctx: Ctx) -> CheckResult:
-    """Check matches per competition-season against the raw files and the project spec"""
+    """Check matches per competition-season against the raw files and the expected counts."""
     table = dict(
         ((c, s), n)
         for c, s, n in ctx.q("select competition_id, season_id, count(*) from matches group by all")
@@ -117,17 +118,18 @@ def match_counts_per_competition_season(ctx: Ctx) -> CheckResult:
             problems.append(f"{cs.competition_id}/{cs.season_id}: table {got}, matches file {raw}")
         if ctx.check_section_2 and cs.expected_matches is not None and raw != cs.expected_matches:
             problems.append(
-                f"{cs.competition_id}/{cs.season_id}: file {raw}, §2 says {cs.expected_matches}"
+                f"{cs.competition_id}/{cs.season_id}: file {raw}, expected {cs.expected_matches}"
             )
         groups[cs.group] = groups.get(cs.group, 0) + got
     if ctx.check_section_2:
         for group, (n, _) in sc.EXPECTED_GROUP_TOTALS.items():
             if groups.get(group) != n:
-                problems.append(f"{group}: {groups.get(group)} matches, §2 says {n}")
+                problems.append(f"{group}: {groups.get(group)} matches, expected {n}")
     total = sum(table.values())
     return _result(
         "match_counts_per_competition_season",
-        "Matches per competition-season equal the matches files and the expected counts.",
+        "Matches per competition-season equal the matches files and the expected counts in "
+        "core/scope.py.",
         problems,
         f"{len(table)} competition-seasons, {total} matches",
     )
@@ -135,7 +137,7 @@ def match_counts_per_competition_season(ctx: Ctx) -> CheckResult:
 
 @check
 def totals_match_section_2(ctx: Ctx) -> CheckResult:
-    """Total and core match counts, and matches with 360 data, equal §2."""
+    """Total and core match counts, and matches with 360 data, equal the expected counts."""
     total, n360, core, core360 = ctx.con.execute(
         "select count(*), sum(has_360::int), sum((scope='core')::int), "
         "sum((scope='core' and has_360)::int) from matches"
@@ -149,10 +151,10 @@ def totals_match_section_2(ctx: Ctx) -> CheckResult:
             ("core matches with 360", core360, sc.EXPECTED_CORE_360),
         ]:
             if got != want:
-                problems.append(f"{label}: {got}, §2 says {want}")
+                problems.append(f"{label}: {got}, expected {want}")
     return _result(
         "totals_match_section_2",
-        "Total, core and 360 match counts equal the expected counts.",
+        "Total, core and 360 match counts equal the expected counts in core/scope.py.",
         problems,
         f"{total} matches ({n360} with 360); core {core} ({core360} with 360)",
     )
@@ -610,8 +612,9 @@ def wy_totals_match_expected(ctx: Ctx) -> CheckResult:
 
     name, desc = (
         "wy_totals_match_expected",
-        "Total matches and events equal the expected counts and the paper. The expected figure of 4,299 "
-        "players with birth dates is compared with the players file and listed if it differs.",
+        "Total matches and events equal the expected counts and the paper. The expected "
+        "figure of 4,299 players with birth dates is compared with the players file and listed "
+        "if it differs.",
     )
     if not _has(ctx, "wy_matches", "wy_events", "wy_players", "wy_lineups"):
         return _skip(name, desc, "wy_* tables")
@@ -1058,7 +1061,7 @@ def no_uncleared_names_published(ctx: Ctx) -> CheckResult:
     name, desc = (
         "no_uncleared_names_published",
         "No name of a player that core.public.display_ok doesn't clear appears in any text "
-        "file under web/public/ or reports/. Matches are reported as "
+        "file under web/public/ or reports/ (the minors rule). Matches are reported as "
         "file and count only.",
     )
     if not _has(ctx, "player_xref", "player_age_status"):

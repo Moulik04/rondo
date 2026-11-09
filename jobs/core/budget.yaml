@@ -1,5 +1,5 @@
 # GPU budget for Rondo on Bridges-2. Read by `make report` for the ledger.
-# The whole remaining allocation is Rondo's.
+# The whole remaining allocation is Rondo's (8 Nov 2026).
 # The allocation id is never written here.
 as_of: "2026-11-08"
 total_su: 474
