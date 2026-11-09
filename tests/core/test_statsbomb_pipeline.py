@@ -17,7 +17,17 @@ from rondo.core.statsbomb_parse import clock_to_s, timestamp_to_s
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = (ROOT / "docs" / "DATA_CONTRACT.md").read_text()
 #: Real-data-only tables: the World Cup links and the DFL event/lineup feeds.
-SYNTHETIC_ABSENT = {"match_xref", "team_xref", "dfl_events", "dfl_lineups"}
+SYNTHETIC_ABSENT = {
+    "match_xref",
+    "team_xref",
+    "dfl_events",
+    "dfl_lineups",
+    # Phase 3 tables need Wikidata (network), so they're built on the real data only.
+    "team_wikidata",
+    "player_xref",
+    "wikidata_people",
+    "player_age_status",
+}
 
 
 # --- contract -------------------------------------------------------------------------------

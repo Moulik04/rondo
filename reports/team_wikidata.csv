@@ -1,0 +1,388 @@
+provider,team_id,team_name,kind,qid,qid_label,qid_description,search_text,rank
+dfl,DFL-CLU-00000I,1. FC Kaiserslautern,club,Q8466,1. FC Kaiserslautern,German association football club,1. FC Kaiserslautern,0
+dfl,DFL-CLU-000008,1. FC Köln,club,Q104770,1. FC Köln,"German football club based in Cologne, in North Rhine-Westphalia",1. FC Köln,0
+dfl,DFL-CLU-000005,1. FC Nürnberg,club,Q15786,1. FC Nürnberg,"German sports club based in Nuremberg, Bavaria",1. FC Nürnberg,0
+dfl,DFL-CLU-00000B,Bayer 04 Leverkusen,club,Q104761,Bayer 04 Leverkusen,"association football club in Leverkusen, Germany",Bayer 04 Leverkusen,0
+dfl,DFL-CLU-00000Q,F.C. Hansa Rostock,club,Q142005,F.C. Hansa Rostock,German association football club based in Rostock,F.C. Hansa Rostock,0
+dfl,DFL-CLU-00000G,FC Bayern München,club,Q15789,FC Bayern Munich,"association football club in Munich, Germany",FC Bayern München,0
+dfl,DFL-CLU-00000H,FC St. Pauli,club,Q6463,FC St. Pauli,"sports club in Hamburg, Germany",FC St. Pauli,0
+dfl,DFL-CLU-00000P,Fortuna Düsseldorf,club,Q151747,Fortuna Düsseldorf,German association football club,Fortuna Düsseldorf,0
+dfl,DFL-CLU-000011,SSV Jahn Regensburg,club,Q265570,SSV Jahn Regensburg,association football club,SSV Jahn Regensburg,0
+dfl,DFL-CLU-00000S,VfL Bochum 1848,club,Q105861,VfL Bochum,German professional football club in Bochum,VfL Bochum 1848,0
+statsbomb,158,AC Ajaccio,club,Q270051,A.C. Ajaccio,association football club in France,AC Ajaccio,0
+statsbomb,243,AC Milan,club,Q1543,AC Milan,"football club in Milan, Italy",AC Milan,0
+statsbomb,28,AFC Bournemouth,club,Q19568,AFC Bournemouth,"association football club in Bournemouth, England",AFC Bournemouth,0
+statsbomb,129,AS Monaco,club,Q180305,AS Monaco FC,association football club in Monaco,AS Monaco,0
+statsbomb,229,AS Roma,club,Q2739,AS Roma,"association football club in Rome, Italy",AS Roma,1
+statsbomb,608,Albacete,club,Q576285,Albacete Balompié,Spanish association football club,Albacete,3
+statsbomb,906,Albania,national,Q186262,Albania men's national football team,men's national football team representing Albania,Albania national football team,0
+statsbomb,4898,Algeria,national,Q181903,Algeria men's national football team,men's national football team of Algeria,Algeria national football team,0
+statsbomb,403,Almería,club,Q10407,Unión Deportiva Almería,Spanish football club,UD Almería,1
+statsbomb,145,Angers,club,Q845137,Angers SCO,French football club,Angers,1
+statsbomb,4901,Angola,national,Q192828,Angola men's national football team,national association football team,Angola national football team,0
+statsbomb,779,Argentina,national,Q79800,Argentina national football team,men's national association football team representing Argentina,Argentina national football team,0
+statsbomb,1,Arsenal,club,Q9617,Arsenal F.C.,"association football club in London, England",Arsenal,0
+statsbomb,59,Aston Villa,club,Q18711,Aston Villa F.C.,"association football club in Birmingham, England",Aston Villa,0
+statsbomb,228,Atalanta,club,Q1886,Atalanta BC,"association football club in Bergamo, Italy",Atalanta,2
+statsbomb,215,Athletic Club,club,Q8687,Athletic Club,"Spanish association football team from Bilbao, Spain",Athletic Club,1
+statsbomb,212,Atlético Madrid,club,Q8701,Atlético Madrid,Spanish professional football club in Madrid,Atlético Madrid,0
+statsbomb,172,Augsburg,club,Q15755,FC Augsburg,German association football club,Augsburg,3
+statsbomb,792,Australia,national,Q268208,Australia men's national soccer team,men's national association football team representing Australia,Australia national football team,0
+statsbomb,915,Austria,national,Q163534,Austria men's national football team,men's national association football team representing Austria,Austria national football team,0
+statsbomb,167,Auxerre,club,Q182876,AJ Auxerre,"football club based in Auxerre, France",Auxerre,1
+statsbomb,217,Barcelona,club,Q7156,FC Barcelona,"football club in Barcelona, Catalonia, Spain",Barcelona,1
+statsbomb,2736,Bastia,club,Q208399,SC Bastia,"association football club in Furiani, France",Bastia,3
+statsbomb,904,Bayer Leverkusen,club,Q104761,Bayer 04 Leverkusen,"association football club in Leverkusen, Germany",Bayer Leverkusen,0
+statsbomb,169,Bayern Munich,club,Q15789,FC Bayern Munich,"association football club in Munich, Germany",Bayern Munich,0
+statsbomb,782,Belgium,national,Q166776,Belgium men's national football team,men's national association football team representing Belgium,Belgium national football team,0
+statsbomb,7284,Bengaluru,club,Q16243716,Bengaluru FC,"professional association football club based in Bengaluru, India",Bengaluru football club,0
+statsbomb,54,Birmingham City,club,Q19444,Birmingham City F.C.,"association football club in Birmingham, England",Birmingham City,0
+statsbomb,98,Blackburn Rovers,club,Q19446,Blackburn Rovers F.C.,"association football club in Blackburn, England",Blackburn Rovers,0
+statsbomb,868,Bochum,club,Q105861,VfL Bochum,German professional football club in Bochum,VfL Bochum,0
+statsbomb,3564,Bolivia,national,Q193386,Bolivia men's national football team,Men's national football team of Bolivia,Bolivia national football team,0
+statsbomb,240,Bologna,club,Q1893,Bologna F.C. 1909,"Italian football club based in Bologna, Emilia-Romagna",Bologna,2
+statsbomb,328,Bolton Wanderers,club,Q19451,Bolton Wanderers F.C.,"association football club in Horwich, England",Bolton Wanderers,0
+statsbomb,146,Bordeaux,club,Q172476,FC Girondins de Bordeaux,"association football club in Bordeaux, France",Bordeaux,4
+statsbomb,180,Borussia Dortmund,club,Q41420,Borussia Dortmund,German professional sports club based in Dortmund,Borussia Dortmund,0
+statsbomb,185,Borussia Mönchengladbach,club,Q101959,Borussia Mönchengladbach,"professional association football club in Mönchengladbach, North Rhine-Westphalia, Germany",Borussia Mönchengladbach,0
+statsbomb,781,Brazil,national,Q83459,Brazil men's national football team,men's national association football team representing Brazil,Brazil national football team,0
+statsbomb,4921,Burkina Faso,national,Q44270,Burkina Faso men's national football team,men's national association football team representing Burkina Faso,Burkina Faso national football team,0
+statsbomb,444,CD Numancia de Soria,club,Q12158,Club Deportivo Numancia de Soria,Spanish professional football club,CD Numancia de Soria,0
+statsbomb,2722,Cameroon,national,Q175309,Cameroon men's national football team,men's national association football team representing Cameroon,Cameroon national football team,0
+statsbomb,1833,Canada,national,Q208635,Canadian men's national soccer team,men's national association football team representing Canada,Canada national football team,0
+statsbomb,4924,Cape Verde Islands,national,Q330039,Cape Verde men's national football team,men's national association football team representing Cape Verde,Cape Verde national football team,0
+statsbomb,1683,Carpi,club,Q610621,A.C. Carpi,"association football club in Carpi, Italy",Carpi football club,0
+statsbomb,209,Celta Vigo,club,Q8749,RC Celta de Vigo,Spanish association football club,Celta Vigo,0
+statsbomb,8070,Charlotte,club,Q78944434,Charlotte FC,"professional soccer club in Charlotte, North Carolina, USA",Charlotte football club,0
+statsbomb,75,Charlton Athletic,club,Q19462,Charlton Athletic F.C.,"association football club in London, England",Charlton Athletic,0
+statsbomb,33,Chelsea,club,Q9616,Chelsea F.C.,"association football club in London, England",Chelsea,5
+statsbomb,7290,Chennaiyin,club,Q17594408,Chennaiyin FC,Indian professional football club based in Chennai,Chennaiyin,0
+statsbomb,231,Chievo,club,Q2037,AC ChievoVerona,"Italian football club from Chievo, Verona",Chievo,0
+statsbomb,3562,Chile,national,Q172025,Chile men's national football team,men's national association football team representing Chile,Chile national football team,0
+statsbomb,489,Cincinnati,club,Q20855983,FC Cincinnati,"soccer club in Cincinnati, Ohio, USA",FC Cincinnati,0
+statsbomb,152,Clermont Foot,club,Q870182,Clermont Foot 63,French association football club,Clermont Foot,0
+statsbomb,769,Colombia,national,Q212564,Colombia men's national football team,men's national football team representing Colombia,Colombia national football team,0
+statsbomb,4881,Congo DR,national,Q270080,DR Congo men's national football team,"The Democratic Republic of Congo national football team, nicknamed the Leopards",Congo DR national football team,0
+statsbomb,795,Costa Rica,national,Q194387,Costa Rica men's national football team,men's national association football team representing Costa Rica,Costa Rica national football team,0
+statsbomb,785,Croatia,national,Q134479,Croatia men's national football team,men's national association football team representing Croatia,Croatia national football team,0
+statsbomb,31,Crystal Palace,club,Q19467,Crystal Palace F.C.,"association football club in London, England",Crystal Palace,0
+statsbomb,912,Czech Republic,national,Q483868,Czechia men's national football team,men's national association football team representing Czechia,Czech Republic national football team,0
+statsbomb,552,Cádiz,club,Q460448,Cádiz Club de Fútbol,association football team in Spain,Cádiz CF,0
+statsbomb,373,Córdoba CF,club,Q10499,Córdoba CF,Spanish association football team,Córdoba CF,0
+statsbomb,3374,Côte d'Ivoire,national,Q175145,Ivory Coast men's national football team,national association football team,Côte d'Ivoire national football team,0
+statsbomb,872,Darmstadt 98,club,Q479351,SV Darmstadt 98,association football club in Germany,Darmstadt 98,0
+statsbomb,776,Denmark,national,Q131785,Denmark men's national football team,men's national association football team representing Denmark,Denmark national football team,0
+statsbomb,206,Deportivo Alavés,club,Q223620,Deportivo Alavés,"association football club in Vitoria-Gasteiz, Spain",Deportivo Alavés,0
+statsbomb,7286,East Bengal,club,Q122981749,East Bengal FC,"Indian association football club based in Kolkata, West Bengal",East Bengal football club,0
+statsbomb,3565,Ecuador,national,Q987584,Ecuador men's national football team,men's national association football team representing Ecuador,Ecuador national football team,0
+statsbomb,774,Egypt,national,Q28089,Egypt men's national football team,Men's association football team,Egypt national football team,0
+statsbomb,322,Eibar,club,Q770740,SD Eibar,men's association football club from Spain,Eibar,1
+statsbomb,184,Eintracht Frankfurt,club,Q38245,Eintracht Frankfurt,"sports club based in Frankfurt am Main, Hesse, Germany",Eintracht Frankfurt,0
+statsbomb,1042,Elche,club,Q10512,Elche CF,Spanish association football team,Elche,2
+statsbomb,290,Empoli,club,Q6703,Empoli FC,"Italian professional football club in Empoli,",Empoli,0
+statsbomb,768,England,national,Q47762,England men's national association football team,men's national association football team representing England,England national football team,0
+statsbomb,4992,Equatorial Guinea,national,Q255771,Equatorial Guinea men's national association football team,men's national association football team representing Equatorial Guinea,Equatorial Guinea national football team,0
+statsbomb,214,Espanyol,club,Q8780,RCD Espanyol de Barcelona,sports club in Spain,Espanyol,0
+statsbomb,29,Everton,club,Q5794,Everton F.C.,"association football club in Liverpool, England",Everton,3
+statsbomb,201,FC Heidenheim,club,Q162251,1. FC Heidenheim 1846,German association football club,FC Heidenheim,0
+statsbomb,186,FC Köln,club,Q104770,1. FC Köln,"German football club based in Cologne, in North Rhine-Westphalia",FC Köln,0
+statsbomb,256,FC Porto,club,Q128446,FC Porto,"professional association football club based in Porto, Portugal",FC Porto,0
+statsbomb,177,FSV Mainz 05,club,Q105254,1. FSV Mainz 05,Bundesliga football club in Germany,FSV Mainz 05,0
+statsbomb,1835,Finland,national,Q186532,Finland men's national football team,men's national association football team representing Finland,Finland national football team,0
+statsbomb,239,Fiorentina,club,Q2052,ACF Fiorentina,"association football club in Florence, Italy",Fiorentina,0
+statsbomb,771,France,national,Q47774,France men's national association football team,national association football team representing France,France national football team,0
+statsbomb,183,Freiburg,club,Q106394,SC Freiburg,German football club,SC Freiburg,0
+statsbomb,291,Frosinone,club,Q845043,Frosinone Calcio,"football club based in Frosinone, Lazio, Italy",Frosinone,2
+statsbomb,55,Fulham,club,Q18708,Fulham F.C.,"association football club in London, England",Fulham,1
+statsbomb,4934,Gambia,national,Q270181,The Gambia men's national football team,national association football team of The Gambia,Gambia national football team,0
+statsbomb,160,Gazélec Ajaccio,club,Q627334,Gazélec Ajaccio,"football club in Ajaccio, Corsica, France",Gazélec Ajaccio,0
+statsbomb,233,Genoa,club,Q2074,Genoa CFC,"association football club in Genoa, Italy",Genoa,1
+statsbomb,2138,Georgia,national,Q186268,Georgia men's national football team,men's national association football team representing Georgia,Georgia national football team,0
+statsbomb,770,Germany,national,Q43310,Germany men's national association football team,German men's national association football team,Germany national football team,0
+statsbomb,216,Getafe,club,Q8806,Getafe CF,Spanish professional football club based in Getafe,Getafe,2
+statsbomb,4885,Ghana,national,Q172014,Ghana men's national football team,men's national association football team representing Ghana,Ghana national football team,0
+statsbomb,1036,Gimnàstic Tarragona,club,Q257984,Gimnàstic de Tarragona,sports club in Catalonia,Gimnàstic Tarragona,1
+statsbomb,211,Girona,club,Q11945,Girona FC,Spanish football club,Girona,5
+statsbomb,7288,Goa,club,Q16839398,FC Goa,an Indian professional football club based in Goa that competes in the Indian Super League,Goa football club,0
+statsbomb,1049,Granada,club,Q8812,Granada CF,Spanish football club,Granada CF,0
+statsbomb,4892,Guinea,national,Q235411,Guinea men's national football team,men's national association football team representing Guinea,Guinea national football team,0
+statsbomb,4894,Guinea-Bissau,national,Q455123,Guinea-Bissau men's national football team,men's national association football team representing Guinea-Bissau,Guinea-Bissau national football team,0
+statsbomb,142,Guingamp,club,Q459148,En Avant de Guingamp,French football club,Guingamp,1
+statsbomb,171,Hamburger SV,club,Q51974,Hamburger SV,"German sports club based in Hamburg, with its largest branch being its football department",Hamburger SV,0
+statsbomb,178,Hannover 96,club,Q33748,Hannover 96,German sports club,Hannover 96,0
+statsbomb,226,Hellas Verona,club,Q8639,Hellas Verona FC,"Italian football club based in Verona, Veneto",Hellas Verona,0
+statsbomb,173,Hertha Berlin,club,Q102720,Hertha BSC,sports club of Berlin in Germany,Hertha Berlin,0
+statsbomb,175,Hoffenheim,club,Q22707,TSG 1899 Hoffenheim,German association football club,Hoffenheim,0
+statsbomb,902,Huesca,club,Q11971,Sociedad Deportiva Huesca,Spanish football club,Huesca,4
+statsbomb,916,Hungary,national,Q170561,Hungary men's national football team,men's national association football team representing Hungary,Hungary national football team,0
+statsbomb,1218,Hércules,club,Q11963,Hércules CF,Spanish association football team,Hércules CF,0
+statsbomb,793,Iceland,national,Q189198,Iceland men's national football team,men's national association football team representing Iceland,Iceland national football team,0
+statsbomb,189,Ingolstadt,club,Q170117,FC Ingolstadt 04,"association football club from Ingolstadt, Germany",FC Ingolstadt 04,0
+statsbomb,1975,Inter Miami,club,Q16844931,Inter Miami CF,American professional soccer club based in Miami,Inter Miami,0
+statsbomb,238,Inter Milan,club,Q631,Inter Milan,"association football club based in Milan, Lombardy, Italy",Inter Milan,0
+statsbomb,797,Iran,national,Q184602,Iran men's national football team,men's national association football team representing Iran,Iran national football team,0
+statsbomb,914,Italy,national,Q676899,Italy men's national association football team,men's national association football team representing Italy,Italy national football team,0
+statsbomb,2305,Jamaica,national,Q235399,Jamaica men's national association football team,men's national association football team representing Jamaica,Jamaica national football team,0
+statsbomb,2021,Jamshedpur,club,Q30644987,Jamshedpur FC,Indian professional football club,Jamshedpur,5
+statsbomb,778,Japan,national,Q170566,Japan men's national football team,men's national association football team representing Japan,Japan national football team,0
+statsbomb,224,Juventus,club,Q1422,Juventus FC,"association football club in Turin, Italy",Juventus,0
+statsbomb,7283,Kerala Blasters,club,Q16842784,Kerala Blasters FC,association football club in India,Kerala Blasters,0
+statsbomb,919,LAFC,club,Q18380286,Los Angeles FC,"association football club in Los Angeles, California, USA",LAFC,0
+statsbomb,208,Las Palmas,club,Q11979,UD Las Palmas,Spanish association football team,Las Palmas,1
+statsbomb,236,Lazio,club,Q2609,SS Lazio,"football section of the sports club based in Rome, Lazio, Italy",Lazio,2
+statsbomb,101,Leeds United,club,Q1128631,Leeds United F.C.,"association football club in Leeds, England",Leeds United,0
+statsbomb,205,Leganés,club,Q856119,CD Leganés,"association football club in Leganés, Spain",Leganés,3
+statsbomb,22,Leicester City,club,Q19481,Leicester City F.C.,"association football club in Leicester, England",Leicester City,0
+statsbomb,168,Lens,club,Q191843,R.C. Lens,French association football club,Lens,6
+statsbomb,221,Levante UD,club,Q8823,Levante UD,Spanish football club,Levante UD,0
+statsbomb,143,Lille,club,Q19516,Lille OSC,"association football club in Lille, France",Lille,2
+statsbomb,24,Liverpool,club,Q1130849,Liverpool F.C.,"association football club in Liverpool, England",Liverpool,1
+statsbomb,165,Lorient,club,Q48911,F.C. Lorient,French association football club,Lorient FC,0
+statsbomb,137,Lyon,club,Q704,Olympique Lyonnais,"association football club in Lyon, France",Lyon,2
+statsbomb,4930,Mali,national,Q211733,Mali men's national football team,men's national association football team representing Mali,Mali national football team,0
+statsbomb,1043,Mallorca,club,Q8835,RCD Mallorca,Spanish association football team,Mallorca,1
+statsbomb,36,Manchester City,club,Q50602,Manchester City F.C.,"association football club in Manchester, England",Manchester City,0
+statsbomb,39,Manchester United,club,Q18656,Manchester United F.C.,"association football club in Manchester, England",Manchester United,0
+statsbomb,4932,Mauritania,national,Q477067,Mauritania men's national football team,men's national association football team representing Mauritania,Mauritania national football team,0
+statsbomb,141,Metz,club,Q221525,FC Metz,"association football club based in Metz, Lorraine, France",Metz football club,0
+statsbomb,794,Mexico,national,Q164089,Mexico men's national football team,men's national association football team representing Mexico,Mexico national football team,0
+statsbomb,47,Middlesbrough,club,Q18661,Middlesbrough F.C.,"association football club in Middlesbrough, England",Middlesbrough,1
+statsbomb,7282,Mohun Bagan Super Giant,club,Q60762002,Mohun Bagan Super Giant,"Indian association football club based in Kolkata, West Bengal",Mohun Bagan Super Giant,0
+statsbomb,139,Montpellier,club,Q19513,Montpellier Hérault Sport Club,French professional football club,Montpellier,6
+statsbomb,788,Morocco,national,Q207337,Morocco men's national football team,men's national association football team representing Morocco,Morocco national football team,0
+statsbomb,4978,Mozambique,national,Q254231,Mozambique men's national football team,national association football team representing Mozambique,Mozambique national football team,0
+statsbomb,7287,Mumbai City,club,Q16845355,Mumbai City FC,"association football club in Mumbai, India",Mumbai City,1
+statsbomb,223,Málaga,club,Q8857,Málaga CF,"Spanish football club based in Málaga, Andalusia, Spain",Málaga,6
+statsbomb,4980,Namibia,national,Q328687,Namibia men's national football team,national association football team,Namibia national football team,0
+statsbomb,144,Nantes,club,Q192071,FC Nantes,French professional football club based in Nantes,Nantes FC,0
+statsbomb,227,Napoli,club,Q2641,SSC Napoli,Italian professional football club based in Naples,Napoli,2
+statsbomb,1938,Nashville SC,club,Q47518754,Nashville SC,"Major League Soccer franchise in Nashville, Tennessee",Nashville SC,0
+statsbomb,941,Netherlands,national,Q47050,Netherlands national association football team,men's national association football team representing the Netherlands,Netherlands national football team,0
+statsbomb,387,New York Red Bulls,club,Q204220,Red Bull New York,"Major League Soccer franchise in Harrison, New Jersey, USA",New York Red Bulls,0
+statsbomb,37,Newcastle United,club,Q18716,Newcastle United F.C.,"association football club in Newcastle upon Tyne, England",Newcastle United,0
+statsbomb,775,Nigeria,national,Q181930,Nigeria men's national football team,men's national association football team representing Nigeria,Nigeria national football team,0
+statsbomb,2358,North Macedonia,national,Q188568,North Macedonia men's national football team,men's national association football team representing North Macedonia,North Macedonia national football team,0
+statsbomb,7285,NorthEast United,club,Q16840338,NorthEast United FC,Indian professional football club based in Guwahati,NorthEast United,0
+statsbomb,56,Norwich City,club,Q18721,Norwich City F.C.,"association football club in Norwich, England",Norwich City,0
+statsbomb,136,OGC Nice,club,Q185163,OGC Nice,association football club in France,OGC Nice,0
+statsbomb,7291,Odisha,club,Q16838244,Odisha FC,Indian professional football club based in Bhuvaneshwar,Odisha football club,0
+statsbomb,147,Olympique de Marseille,club,Q132885,Olympique de Marseille,"association football club in Marseille, France",Olympique de Marseille,0
+statsbomb,422,Osasuna,club,Q10286,Club Atlético Osasuna,Spanish association football team,Osasuna,1
+statsbomb,2256,Palermo,club,Q2674,Palermo F.C.,"association football club in Palermo, Sicily, Italy",Palermo,6
+statsbomb,798,Panama,national,Q223748,Panama men's national football team,men's national association football team representing Panama,Panama national football team,0
+statsbomb,3567,Paraguay,national,Q172020,Paraguay men's national football team,men's national association football team representing Paraguay,Paraguay national football team,0
+statsbomb,131,Paris Saint-Germain,club,Q483020,Paris Saint-Germain FC,"association football club in Paris, France having two UCL",Paris Saint-Germain,0
+statsbomb,784,Peru,national,Q212166,Peru men's national football team,men's national association football team representing Peru,Peru national football team,0
+statsbomb,789,Poland,national,Q166196,Poland men's national football team,men's national association football team representing Poland,Poland national football team,0
+statsbomb,105,Portsmouth,club,Q19604,Portsmouth F.C.,"association football club in Portsmouth, England",Portsmouth,3
+statsbomb,780,Portugal,national,Q267245,Portugal men's national football team,men's national association football team representing Portugal,Portugal national football team,0
+statsbomb,3566,Qatar,national,Q232731,Qatar men's national football team,men's national association football team representing Qatar,Qatar national football team,0
+statsbomb,182,RB Leipzig,club,Q702455,RB Leipzig,"association football club in Leipzig, Saxony, Germany",RB Leipzig,0
+statsbomb,219,RC Deportivo La Coruña,club,Q8760,Deportivo de A Coruña,Spanish association football club,RC Deportivo La Coruña,0
+statsbomb,1217,Racing Santander,club,Q12236,Racing de Santander,Spanish football club,Racing Santander,0
+statsbomb,360,Rayo Vallecano,club,Q10300,Rayo Vallecano,Spanish football team,Rayo Vallecano,0
+statsbomb,218,Real Betis,club,Q8723,Real Betis Balompié,Spanish professional football club,Real Betis,0
+statsbomb,220,Real Madrid,club,Q8682,Real Madrid Club de Fútbol,"association football club in Madrid, Spain",Real Madrid,0
+statsbomb,1230,Real Murcia CF,club,Q12230,Real Murcia,Spanish association football club,Real Murcia CF,0
+statsbomb,210,Real Sociedad,club,Q10315,Real Sociedad,"association football club in San Sebastián, Spain",Real Sociedad,0
+statsbomb,901,Real Valladolid,club,Q10319,Real Valladolid,Spanish football club,Real Valladolid,0
+statsbomb,395,Real Zaragoza,club,Q10308,Real Zaragoza,Spanish association football team based in Zaragoza,Real Zaragoza,0
+statsbomb,1220,Recreativo Huelva,club,Q12249,Recreativo de Huelva,Spanish football club,Recreativo Huelva,0
+statsbomb,134,Rennes,club,Q19509,Stade Rennais F.C.,French association football club,Rennes,2
+statsbomb,905,Romania,national,Q168397,Romania men's national association football team,national association football team,Romania national football team,0
+statsbomb,796,Russia,national,Q726080,Russia men's national football team,men's national football team representing Russia,Russia national football team,0
+statsbomb,7289,SC Delhi,club,Q66816187,SC Delhi,"Indian professional football club based in Hyderabad, Telangana",SC Delhi,0
+statsbomb,135,Saint-Étienne,club,Q19521,AS Saint-Étienne,"association football club in Saint-Étienne, France",Saint-Étienne,1
+statsbomb,234,Sampdoria,club,Q1457,U.C. Sampdoria,"association football club based in Genoa, Italy",Sampdoria,0
+statsbomb,232,Sassuolo,club,Q8603,US Sassuolo Calcio,"Italian football club based in Sassuolo, Emilia-Romagna",Sassuolo,1
+statsbomb,799,Saudi Arabia,national,Q189723,Saudi Arabia men's national football team,men's national association football team representing Saudi Arabia,Saudi Arabia national football team,0
+statsbomb,181,Schalke 04,club,Q32494,Schalke 04,German football club from the Schalke district of Gelsenkirchen,Schalke 04,0
+statsbomb,942,Scotland,national,Q34044,Scotland men's national football team,men's association football team representing Scotland,Scotland national football team,0
+statsbomb,787,Senegal,national,Q207441,Senegal men's national association football team,men's national association football team representing Senegal,Senegal national football team,0
+statsbomb,786,Serbia,national,Q182740,Serbia men's national football team,men's national association football team representing Serbia,Serbia national football team,0
+statsbomb,213,Sevilla,club,Q10329,Sevilla FC,Spanish professional football club based in Seville,Sevilla,5
+statsbomb,908,Slovakia,national,Q174512,Slovakia men's national football team,men's national football team representing Slovakia,Slovakia national football team,0
+statsbomb,944,Slovenia,national,Q172221,Slovenia men's national football team,men's national association football team representing Slovenia,Slovenia national football team,0
+statsbomb,4976,South Africa,national,Q170327,South Africa men's national association football team,men's national association football team representing South Africa,South Africa national football team,0
+statsbomb,791,South Korea,national,Q543842,South Korea men's national football team,men's national association football team representing South Korea,South Korea national football team,0
+statsbomb,25,Southampton,club,Q18732,Southampton F.C.,"association football club in Southampton, England",Southampton,1
+statsbomb,772,Spain,national,Q42267,Spain men's national football team,men's national association football team representing Spain,Spain national football team,0
+statsbomb,1041,Sporting Gijón,club,Q12278,Sporting de Gijón,Spanish association football club,Sporting Gijón,0
+statsbomb,153,Stade Brestois,club,Q218372,Stade Brestois 29,association football club,Stade Brestois,0
+statsbomb,140,Stade Malherbe Caen,club,Q193377,Stade Malherbe Caen,French association football team,Stade Malherbe Caen,0
+statsbomb,156,Stade de Reims,club,Q208228,Stade de Reims,French association football club,Stade de Reims,0
+statsbomb,30,Stoke City,club,Q18736,Stoke City F.C.,"association football club in Stoke-on-Trent, England",Stoke City,0
+statsbomb,138,Strasbourg,club,Q126334,RC Strasbourg Alsace,association football club in France,Strasbourg,1
+statsbomb,41,Sunderland,club,Q18739,Sunderland A.F.C.,"association football club in Sunderland, England",Sunderland,2
+statsbomb,26,Swansea City,club,Q18659,Swansea City A.F.C.,"association football club in Swansea, Wales",Swansea City,0
+statsbomb,790,Sweden,national,Q160826,Sweden men's national football team,men's national association football team representing Sweden,Sweden national football team,0
+statsbomb,773,Switzerland,national,Q165141,Switzerland men's national football team,men's national association football team representing Switzerland,Switzerland national football team,0
+statsbomb,4953,Tanzania,national,Q244728,Tanzania men's national football team,men's national association football team representing Tanzania,Tanzania national football team,0
+statsbomb,627,Tenerife,club,Q216661,C.D. Tenerife,association football club,CD Tenerife,0
+statsbomb,241,Torino,club,Q2768,Torino FC,"Italian football club based in Turin, Piedmont",Torino,1
+statsbomb,575,Toronto FC,club,Q327238,Toronto FC,"soccer club in Toronto, Ontario, Canada",Toronto FC,0
+statsbomb,38,Tottenham Hotspur,club,Q18741,Tottenham Hotspur F.C.,"association football club in London, England",Tottenham Hotspur,0
+statsbomb,130,Toulouse,club,Q19518,Toulouse FC,French association football club,Toulouse,3
+statsbomb,133,Troyes,club,Q501693,ES Troyes AC,"association football club in Troyes, France",Troyes,2
+statsbomb,777,Tunisia,national,Q27971,Tunisia men's national football team,men's national association football team representing Tunisia,Tunisia national football team,0
+statsbomb,909,Turkey,national,Q483856,Turkey men's national football team,men's national association football team representing Turkey,Turkey national football team,0
+statsbomb,230,Udinese,club,Q2798,Udinese Calcio,"Italian association football club based in Udine, Italy",Udinese,0
+statsbomb,911,Ukraine,national,Q170403,Ukraine men's national football team,men's national association football team representing Ukraine,Ukraine national football team,0
+statsbomb,190,Union Berlin,club,Q141971,1. FC Union Berlin,"association football club in Berlin, Germany",Union Berlin,0
+statsbomb,1839,United States,national,Q164134,United States men's national soccer team,men's national association football (soccer) team representing the USA,United States national football team,0
+statsbomb,783,Uruguay,national,Q134916,Uruguay men's national football team,men's national association football team representing AUF,Uruguay national football team,0
+statsbomb,207,Valencia,club,Q10333,Valencia CF,"association football club in Valencia, Spain",Valencia football club,0
+statsbomb,3563,Venezuela,national,Q214151,Venezuela men's national football team,Official representative of the Venezuelan Soccer Federation in international competitions,Venezuela national football team,0
+statsbomb,174,VfB Stuttgart,club,Q4512,VfB Stuttgart,"German football team based in the city of Stuttgart, founded in 1893",VfB Stuttgart,0
+statsbomb,222,Villarreal,club,Q12297,Villarreal CF,"association football club in Villarreal, Spain",Villarreal,1
+statsbomb,907,Wales,national,Q180857,Wales men's national association football team,men's association football team representing Wales,Wales national football team,0
+statsbomb,23,Watford,club,Q2714,Watford F.C.,"association football club in Watford, England",Watford,3
+statsbomb,176,Werder Bremen,club,Q51976,SV Werder Bremen,"association football club in Bremen, Germany",Werder Bremen,0
+statsbomb,27,West Bromwich Albion,club,Q18744,West Bromwich Albion F.C.,"association football club in West Bromwich, England",West Bromwich Albion,0
+statsbomb,40,West Ham United,club,Q18747,West Ham United F.C.,"association football club in London, England",West Ham United,0
+statsbomb,179,Wolfsburg,club,Q101859,VfL Wolfsburg,"association football club from Wolfsburg, Lower Saxony, Germany",Wolfsburg,0
+statsbomb,46,Wolverhampton Wanderers,club,Q19500,Wolverhampton Wanderers F.C.,"association football club in Wolverhampton, England",Wolverhampton Wanderers,0
+statsbomb,1219,Xerez,club,Q12308,Xerez C.D.,Spanish association football team,Xerez,1
+statsbomb,4963,Zambia,national,Q206350,Zambia men's national football team,men's national association football team representing Zambia,Zambia national football team,0
+wyscout,1659,AFC Bournemouth,club,Q19568,AFC Bournemouth,"association football club in Bournemouth, England",AFC Bournemouth,0
+wyscout,8731,Albania,national,Q186262,Albania men's national football team,men's national football team representing Albania,Albania national football team,0
+wyscout,3789,Amiens SC,club,Q866884,Amiens SC,association football club in France,Amiens SC,0
+wyscout,3799,Angers,club,Q845137,Angers SCO,French football club,Angers,1
+wyscout,12274,Argentina,national,Q79800,Argentina national football team,men's national association football team representing Argentina,Argentina national football team,0
+wyscout,1609,Arsenal,club,Q9617,Arsenal F.C.,"association football club in London, England",Arsenal,0
+wyscout,3172,Atalanta,club,Q1886,Atalanta BC,"association football club in Bergamo, Italy",Atalanta,2
+wyscout,678,Athletic Club,club,Q8687,Athletic Club,"Spanish association football team from Bilbao, Spain",Athletic Club,1
+wyscout,679,Atlético Madrid,club,Q8701,Atlético Madrid,Spanish professional football club in Madrid,Atlético Madrid,0
+wyscout,2481,Augsburg,club,Q15755,FC Augsburg,German association football club,Augsburg,3
+wyscout,8493,Australia,national,Q268208,Australia men's national soccer team,men's national association football team representing Australia,Australia national football team,0
+wyscout,9109,Austria,national,Q163534,Austria men's national football team,men's national association football team representing Austria,Austria national football team,0
+wyscout,676,Barcelona,club,Q7156,FC Barcelona,"football club in Barcelona, Catalonia, Spain",Barcelona,1
+wyscout,2446,Bayer Leverkusen,club,Q104761,Bayer 04 Leverkusen,"association football club in Leverkusen, Germany",Bayer Leverkusen,0
+wyscout,2444,Bayern München,club,Q15789,FC Bayern Munich,"association football club in Munich, Germany",Bayern München,0
+wyscout,5629,Belgium,national,Q166776,Belgium men's national football team,men's national association football team representing Belgium,Belgium national football team,0
+wyscout,3219,Benevento,club,Q652516,Benevento Calcio,"football club based in Benevento, Campania, Italy",Benevento,3
+wyscout,3166,Bologna,club,Q1893,Bologna F.C. 1909,"Italian football club based in Bologna, Emilia-Romagna",Bologna,2
+wyscout,3772,Bordeaux,club,Q172476,FC Girondins de Bordeaux,"association football club in Bordeaux, France",Bordeaux,4
+wyscout,2447,Borussia Dortmund,club,Q41420,Borussia Dortmund,German professional sports club based in Dortmund,Borussia Dortmund,0
+wyscout,2454,Borussia M'gladbach,club,Q101959,Borussia Mönchengladbach,"professional association football club in Mönchengladbach, North Rhine-Westphalia, Germany",Borussia M'gladbach,0
+wyscout,6380,Brazil,national,Q83459,Brazil men's national football team,men's national association football team representing Brazil,Brazil national football team,0
+wyscout,1651,Brighton & Hove Albion,club,Q19453,Brighton & Hove Albion F.C.,"football club in Brighton & Hove, England",Brighton & Hove Albion,0
+wyscout,1646,Burnley,club,Q19458,Burnley F.C.,"association football club in Burnley, England",Burnley,2
+wyscout,3783,Caen,club,Q193377,Stade Malherbe Caen,French association football team,Stade Malherbe Caen,0
+wyscout,3173,Cagliari,club,Q1900,Cagliari Calcio,"association football club in Cagliari, Italy",Cagliari,1
+wyscout,692,Celta de Vigo,club,Q2311865,RC Celta Fortuna,Spanish association football club,Celta de Vigo,0
+wyscout,1610,Chelsea,club,Q9616,Chelsea F.C.,"association football club in London, England",Chelsea,5
+wyscout,3165,Chievo,club,Q2037,AC ChievoVerona,"Italian football club from Chievo, Verona",Chievo,0
+wyscout,12430,Colombia,national,Q212564,Colombia men's national football team,men's national football team representing Colombia,Colombia national football team,0
+wyscout,16871,Costa Rica,national,Q194387,Costa Rica men's national football team,men's national association football team representing Costa Rica,Costa Rica national football team,0
+wyscout,9598,Croatia,national,Q134479,Croatia men's national football team,men's national association football team representing Croatia,Croatia national football team,0
+wyscout,3197,Crotone,club,Q6690,F.C. Crotone,Italian association football club,Crotone,2
+wyscout,1628,Crystal Palace,club,Q19467,Crystal Palace F.C.,"association football club in London, England",Crystal Palace,0
+wyscout,11555,Czech Republic,national,Q483868,Czechia men's national football team,men's national association football team representing Czechia,Czech Republic national football team,0
+wyscout,7712,Denmark,national,Q131785,Denmark men's national football team,men's national association football team representing Denmark,Denmark national football team,0
+wyscout,696,Deportivo Alavés,club,Q223620,Deportivo Alavés,"association football club in Vitoria-Gasteiz, Spain",Deportivo Alavés,0
+wyscout,677,Deportivo La Coruña,club,Q8760,Deportivo de A Coruña,Spanish association football club,Deportivo La Coruña,0
+wyscout,3804,Dijon,club,Q503317,Dijon FCO,French association football club based in Dijon,Dijon,3
+wyscout,16129,Egypt,national,Q28089,Egypt men's national football team,Men's association football team,Egypt national football team,0
+wyscout,701,Eibar,club,Q770740,SD Eibar,men's association football club from Spain,Eibar,1
+wyscout,2462,Eintracht Frankfurt,club,Q38245,Eintracht Frankfurt,"sports club based in Frankfurt am Main, Hesse, Germany",Eintracht Frankfurt,0
+wyscout,2413,England,national,Q47762,England men's national association football team,men's national association football team representing England,England national football team,0
+wyscout,691,Espanyol,club,Q8780,RCD Espanyol de Barcelona,sports club in Spain,Espanyol,0
+wyscout,1623,Everton,club,Q5794,Everton F.C.,"association football club in Liverpool, England",Everton,3
+wyscout,3176,Fiorentina,club,Q2052,ACF Fiorentina,"association football club in Florence, Italy",Fiorentina,0
+wyscout,4418,France,national,Q47774,France men's national association football team,national association football team representing France,France national football team,0
+wyscout,2453,Freiburg,club,Q106394,SC Freiburg,German football club,SC Freiburg,0
+wyscout,3193,Genoa,club,Q2074,Genoa CFC,"association football club in Genoa, Italy",Genoa,1
+wyscout,3148,Germany,national,Q43310,Germany men's national association football team,German men's national association football team,Germany national football team,0
+wyscout,698,Getafe,club,Q8806,Getafe CF,Spanish professional football club based in Getafe,Getafe,2
+wyscout,756,Girona,club,Q11945,Girona FC,Spanish football club,Girona,5
+wyscout,3785,Guingamp,club,Q459148,En Avant de Guingamp,French football club,Guingamp,1
+wyscout,2450,Hamburger SV,club,Q51974,Hamburger SV,"German sports club based in Hamburg, with its largest branch being its football department",Hamburger SV,0
+wyscout,2455,Hannover 96,club,Q33748,Hannover 96,German sports club,Hannover 96,0
+wyscout,3194,Hellas Verona,club,Q8639,Hellas Verona FC,"Italian football club based in Verona, Veneto",Hellas Verona,0
+wyscout,2457,Hertha BSC,club,Q102720,Hertha BSC,sports club of Berlin in Germany,Hertha BSC,0
+wyscout,2482,Hoffenheim,club,Q22707,TSG 1899 Hoffenheim,German association football club,Hoffenheim,0
+wyscout,1673,Huddersfield Town,club,Q19473,Huddersfield Town A.F.C.,"association football club in Huddersfield, England",Huddersfield Town,0
+wyscout,10451,Hungary,national,Q170561,Hungary men's national football team,men's national association football team representing Hungary,Hungary national football team,0
+wyscout,7839,Iceland,national,Q189198,Iceland men's national football team,men's national association football team representing Iceland,Iceland national football team,0
+wyscout,3161,Internazionale,club,Q631,Inter Milan,"association football club based in Milan, Lombardy, Italy",Internazionale,0
+wyscout,10840,Iran,national,Q184602,Iran men's national football team,men's national association football team representing Iran,Iran national football team,0
+wyscout,3757,Italy,national,Q676899,Italy men's national association football team,men's national association football team representing Italy,Italy national football team,0
+wyscout,12913,Japan,national,Q170566,Japan men's national football team,men's national association football team representing Japan,Japan national football team,0
+wyscout,3159,Juventus,club,Q1422,Juventus FC,"association football club in Turin, Italy",Juventus,0
+wyscout,14855,Korea Republic,national,Q543842,South Korea men's national football team,men's national association football team representing South Korea,Korea Republic national football team,0
+wyscout,2463,Köln,club,Q104770,1. FC Köln,"German football club based in Cologne, in North Rhine-Westphalia",1. FC Köln,0
+wyscout,714,Las Palmas,club,Q11979,UD Las Palmas,Spanish association football team,Las Palmas,1
+wyscout,3162,Lazio,club,Q2609,SS Lazio,"football section of the sports club based in Rome, Lazio, Italy",Lazio,2
+wyscout,712,Leganés,club,Q856119,CD Leganés,"association football club in Leganés, Spain",Leganés,3
+wyscout,1631,Leicester City,club,Q19481,Leicester City F.C.,"association football club in Leicester, England",Leicester City,0
+wyscout,695,Levante,club,Q8823,Levante UD,Spanish football club,Levante,0
+wyscout,3776,Lille,club,Q19516,Lille OSC,"association football club in Lille, France",Lille,2
+wyscout,1612,Liverpool,club,Q1130849,Liverpool F.C.,"association football club in Liverpool, England",Liverpool,1
+wyscout,2460,Mainz 05,club,Q105254,1. FSV Mainz 05,Bundesliga football club in Germany,Mainz 05,0
+wyscout,1625,Manchester City,club,Q50602,Manchester City F.C.,"association football club in Manchester, England",Manchester City,0
+wyscout,1611,Manchester United,club,Q18656,Manchester United F.C.,"association football club in Manchester, England",Manchester United,0
+wyscout,3777,Metz,club,Q221525,FC Metz,"association football club based in Metz, Lorraine, France",Metz football club,0
+wyscout,15473,Mexico,national,Q164089,Mexico men's national football team,men's national association football team representing Mexico,Mexico national football team,0
+wyscout,3157,Milan,club,Q1543,AC Milan,"football club in Milan, Italy",Milan,4
+wyscout,19830,Monaco,club,Q180305,AS Monaco FC,association football club in Monaco,Monaco,2
+wyscout,3787,Montpellier,club,Q19513,Montpellier Hérault Sport Club,French professional football club,Montpellier,6
+wyscout,16216,Morocco,national,Q207337,Morocco men's national football team,men's national association football team representing Morocco,Morocco national football team,0
+wyscout,683,Málaga,club,Q8857,Málaga CF,"Spanish football club based in Málaga, Andalusia, Spain",Málaga,6
+wyscout,3770,Nantes,club,Q192071,FC Nantes,French professional football club based in Nantes,Nantes FC,0
+wyscout,3187,Napoli,club,Q2641,SSC Napoli,Italian professional football club based in Naples,Napoli,2
+wyscout,1613,Newcastle United,club,Q18716,Newcastle United F.C.,"association football club in Newcastle upon Tyne, England",Newcastle United,0
+wyscout,3775,Nice,club,Q185163,OGC Nice,association football club in France,OGC Nice,0
+wyscout,16823,Nigeria,national,Q181930,Nigeria men's national football team,men's national association football team representing Nigeria,Nigeria national football team,0
+wyscout,10962,Northern Ireland,national,Q190978,Northern Ireland men's national association football team,men's national association football team representing Northern Ireland,Northern Ireland national football team,0
+wyscout,3766,Olympique Lyonnais,club,Q704,Olympique Lyonnais,"association football club in Lyon, France",Olympique Lyonnais,0
+wyscout,3771,Olympique Marseille,club,Q132885,Olympique de Marseille,"association football club in Marseille, France",Olympique Marseille,0
+wyscout,3767,PSG,club,Q483020,Paris Saint-Germain FC,"association football club in Paris, France having two UCL",PSG,0
+wyscout,17929,Panama,national,Q223748,Panama men's national football team,men's national association football team representing Panama,Panama national football team,0
+wyscout,15594,Peru,national,Q212166,Peru men's national football team,men's national association football team representing Peru,Peru national football team,0
+wyscout,13869,Poland,national,Q166196,Poland men's national football team,men's national association football team representing Poland,Poland national football team,0
+wyscout,9905,Portugal,national,Q267245,Portugal men's national football team,men's national association football team representing Portugal,Portugal national football team,0
+wyscout,2975,RB Leipzig,club,Q702455,RB Leipzig,"association football club in Leipzig, Saxony, Germany",RB Leipzig,0
+wyscout,684,Real Betis,club,Q8723,Real Betis Balompié,Spanish professional football club,Real Betis,0
+wyscout,675,Real Madrid,club,Q8682,Real Madrid Club de Fútbol,"association football club in Madrid, Spain",Real Madrid,0
+wyscout,687,Real Sociedad,club,Q10315,Real Sociedad,"association football club in San Sebastián, Spain",Real Sociedad,0
+wyscout,3774,Rennes,club,Q19509,Stade Rennais F.C.,French association football club,Rennes,2
+wyscout,8274,Republic of Ireland,national,Q163547,Republic of Ireland men's national association football team,men's national football team representing the Republic of Ireland,Republic of Ireland national football team,0
+wyscout,3158,Roma,club,Q2739,AS Roma,"association football club in Rome, Italy",AS Roma,1
+wyscout,11944,Romania,national,Q168397,Romania men's national association football team,national association football team,Romania national football team,0
+wyscout,14358,Russia,national,Q726080,Russia men's national football team,men's national football team representing Russia,Russia national football team,0
+wyscout,3204,SPAL,club,Q13385,Ars et Labor Ferrara Calcio,"Italian association football club based in Ferrara, Emilia-Romagna",SPAL,0
+wyscout,3782,Saint-Étienne,club,Q19521,AS Saint-Étienne,"association football club in Saint-Étienne, France",Saint-Étienne,1
+wyscout,3164,Sampdoria,club,Q1457,U.C. Sampdoria,"association football club based in Genoa, Italy",Sampdoria,0
+wyscout,3315,Sassuolo,club,Q8603,US Sassuolo Calcio,"Italian football club based in Sassuolo, Emilia-Romagna",Sassuolo,1
+wyscout,16521,Saudi Arabia,national,Q189723,Saudi Arabia men's national football team,men's national association football team representing Saudi Arabia,Saudi Arabia national football team,0
+wyscout,2449,Schalke 04,club,Q32494,Schalke 04,German football club from the Schalke district of Gelsenkirchen,Schalke 04,0
+wyscout,19314,Senegal,national,Q207441,Senegal men's national association football team,men's national association football team representing Senegal,Senegal national football team,0
+wyscout,17322,Serbia,national,Q182740,Serbia men's national football team,men's national association football team representing Serbia,Serbia national football team,0
+wyscout,680,Sevilla,club,Q10329,Sevilla FC,Spanish professional football club based in Seville,Sevilla,5
+wyscout,14496,Slovakia,national,Q174512,Slovakia men's national football team,men's national football team representing Slovakia,Slovakia national football team,0
+wyscout,1619,Southampton,club,Q18732,Southampton F.C.,"association football club in Southampton, England",Southampton,1
+wyscout,1598,Spain,national,Q42267,Spain men's national football team,men's national association football team representing Spain,Spain national football team,0
+wyscout,1639,Stoke City,club,Q18736,Stoke City F.C.,"association football club in Stoke-on-Trent, England",Stoke City,0
+wyscout,3779,Strasbourg,club,Q126334,RC Strasbourg Alsace,association football club in France,Strasbourg,1
+wyscout,2445,Stuttgart,club,Q4512,VfB Stuttgart,"German football team based in the city of Stuttgart, founded in 1893",VfB Stuttgart,0
+wyscout,10531,Swansea City,club,Q18659,Swansea City A.F.C.,"association football club in Swansea, Wales",Swansea City,0
+wyscout,7047,Sweden,national,Q160826,Sweden men's national football team,men's national association football team representing Sweden,Sweden national football team,0
+wyscout,6697,Switzerland,national,Q165141,Switzerland men's national football team,men's national association football team representing Switzerland,Switzerland national football team,0
+wyscout,3185,Torino,club,Q2768,Torino FC,"Italian football club based in Turin, Piedmont",Torino,1
+wyscout,1624,Tottenham Hotspur,club,Q18741,Tottenham Hotspur F.C.,"association football club in London, England",Tottenham Hotspur,0
+wyscout,3780,Toulouse,club,Q19518,Toulouse FC,French association football club,Toulouse,3
+wyscout,3795,Troyes,club,Q501693,ES Troyes AC,"association football club in Troyes, France",Troyes,2
+wyscout,16276,Tunisia,national,Q27971,Tunisia men's national football team,men's national association football team representing Tunisia,Tunisia national football team,0
+wyscout,4687,Turkey,national,Q483856,Turkey men's national football team,men's national association football team representing Turkey,Turkey national football team,0
+wyscout,3163,Udinese,club,Q2798,Udinese Calcio,"Italian association football club based in Udine, Italy",Udinese,0
+wyscout,14622,Ukraine,national,Q170403,Ukraine men's national football team,men's national association football team representing Ukraine,Ukraine national football team,0
+wyscout,15670,Uruguay,national,Q134916,Uruguay men's national football team,men's national association football team representing AUF,Uruguay national football team,0
+wyscout,674,Valencia,club,Q10333,Valencia CF,"association football club in Valencia, Spain",Valencia football club,0
+wyscout,682,Villarreal,club,Q12297,Villarreal CF,"association football club in Villarreal, Spain",Villarreal,1
+wyscout,10682,Wales,national,Q180857,Wales men's national association football team,men's association football team representing Wales,Wales national football team,0
+wyscout,1644,Watford,club,Q2714,Watford F.C.,"association football club in Watford, England",Watford,3
+wyscout,2443,Werder Bremen,club,Q51976,SV Werder Bremen,"association football club in Bremen, Germany",Werder Bremen,0
+wyscout,1627,West Bromwich Albion,club,Q18744,West Bromwich Albion F.C.,"association football club in West Bromwich, England",West Bromwich Albion,0
+wyscout,1633,West Ham United,club,Q18747,West Ham United F.C.,"association football club in London, England",West Ham United,0
+wyscout,2451,Wolfsburg,club,Q101859,VfL Wolfsburg,"association football club from Wolfsburg, Lower Saxony, Germany",Wolfsburg,0
