@@ -4,7 +4,7 @@ import datetime as dt
 
 import pytest
 
-from rondo.core import ages, public, schemas
+from rondo.core import ages, identity_report, public, schemas
 from rondo.core.identity import Person, ProviderPlayer, match_player, name_score
 from rondo.core.parquet_io import write_single
 
@@ -122,14 +122,30 @@ def status_table(tmp_path):
     return tmp_path
 
 
-def test_display_ok(status_table):
-    ok = lambda p, cs=None, **kw: public.display_ok(p, cs, parquet=status_table, **kw)  # noqa: E731
+def test_display_ok_per_season(status_table):
+    ok = lambda p, cs=None: public.display_ok(p, cs, parquet=status_table)  # noqa: E731
     assert ok("adult") and ok("adult", ["statsbomb:1/2"])
     assert not ok("unknown") and not ok("nobody")
-    assert not ok("grew_up")  # strict: a minor in any covered season is never named
-    assert not ok("grew_up", ["statsbomb:1/2"])
-    assert ok("grew_up", ["statsbomb:1/2"], strict=False)  # per-season reading
-    assert not ok("grew_up", ["statsbomb:1/1"], strict=False)
+    # A minor in one season is named for adult seasons only, never for the minor season.
+    assert ok("grew_up", ["statsbomb:1/2"])
+    assert not ok("grew_up", ["statsbomb:1/1"])
+    assert not ok("grew_up", ["statsbomb:1/1", "statsbomb:1/2"])
+    assert not ok("grew_up")  # no seasons given: every season must clear
+    assert not ok("adult", ["statsbomb:9/9"])  # a season the person isn't in
+    assert not ok("adult", [])
+
+
+def test_nameable_seasons(status_table):
+    seasons = lambda p: public.nameable_seasons(p, parquet=status_table)  # noqa: E731
+    assert seasons("adult") == ["statsbomb:1/1", "statsbomb:1/2"]
+    assert seasons("grew_up") == ["statsbomb:1/2"]
+    assert seasons("unknown") == [] and seasons("nobody") == []
+
+
+def test_precision_lower_bound():
+    assert identity_report.lower_bound(20, 20) == pytest.approx(0.05 ** (1 / 20), abs=1e-6)
+    assert identity_report.lower_bound(0, 20) == 0.0
+    assert identity_report.lower_bound(19, 20) < identity_report.lower_bound(20, 20)
 
 
 def test_scan_finds_whole_names_only(tmp_path):

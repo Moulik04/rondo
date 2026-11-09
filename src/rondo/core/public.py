@@ -1,13 +1,14 @@
 """What may be published: the minors rule.
 
-Every export calls :func:`display_ok` before naming a player. A test scans ``web/public/`` and
-``reports/`` for the names of everyone it doesn't clear.
+Every export calls :func:`display_ok` before naming a player, passing the competition-seasons
+the output is about. A check scans ``web/public/`` and ``reports/`` for the names of everyone
+who can't be named in any season.
 
-Rule 5 says no player "who was under 18 at any point during a covered competition-season" may
-be named in anything published. Read strictly, someone who was a minor in *any* covered
-competition-season is never named, even in output about seasons when they were adults. That is
-the default here (``strict=True``). Passing ``strict=False`` checks only the competition-seasons
-given.
+Rondo reads the minors rule per season: a player may be named in output about a
+competition-season only if they were a verified adult throughout it. Someone who debuted as a
+minor and kept playing can be named for their adult seasons, never for their minor ones. So an
+output that names a player must cover only seasons :func:`display_ok` clears: a career page
+leaves out the seasons when the player was a minor, or doesn't name them.
 """
 
 from __future__ import annotations
@@ -22,7 +23,6 @@ from rondo.core import store
 from rondo.core.paths import parquet_dir
 
 ADULT = "verified_adult"
-MINOR = "minor_during_season"
 
 #: Text files that may carry names.
 SCANNED_SUFFIXES = {".md", ".csv", ".json", ".html", ".txt", ".tsv", ".yaml", ".yml"}
@@ -48,27 +48,33 @@ def display_ok(
     person_id: str,
     competition_seasons: Iterable[str] | None = None,
     *,
-    strict: bool = True,
     parquet: Path | None = None,
 ) -> bool:
     """Return True if this person may be named in output about these competition-seasons.
 
-    ``competition_seasons`` are keys like ``"statsbomb:11/27"``; None means every
-    competition-season the person appears in. The person must be ``verified_adult`` in each.
-    With ``strict`` (the default), a person who was a minor in any covered competition-season
-    is never cleared.
+    ``competition_seasons`` are keys like ``"statsbomb:11/27"``. The person must be
+    ``verified_adult`` in every one of them. None means every competition-season the person
+    appears in, the safe choice for output that isn't about particular seasons.
     """
     st = _statuses((parquet or parquet_dir()).resolve()).get(person_id)
     if not st:
-        return False
-    if strict and any(v == MINOR for v in st.values()):
         return False
     wanted = list(competition_seasons) if competition_seasons is not None else list(st)
     return bool(wanted) and all(st.get(cs) == ADULT for cs in wanted)
 
 
-def blocked_names(parquet: Path | None = None, *, strict: bool = True) -> set[str]:
-    """Every provider name of every person :func:`display_ok` doesn't clear (for scanning)."""
+def nameable_seasons(person_id: str, *, parquet: Path | None = None) -> list[str]:
+    """Return the competition-seasons in which this person may be named, sorted."""
+    st = _statuses((parquet or parquet_dir()).resolve()).get(person_id, {})
+    return sorted(cs for cs, v in st.items() if v == ADULT)
+
+
+def blocked_names(parquet: Path | None = None) -> set[str]:
+    """Every provider name of every person who can't be named in any season (for scanning).
+
+    A text scan can't tell which season a page is about, so it can't police people cleared for
+    some seasons only; for them, the export's call to :func:`display_ok` is the guard.
+    """
     pq = (parquet or parquet_dir()).resolve()
     con = store.connect()
     store.create_views(con, pq)
@@ -93,7 +99,7 @@ def blocked_names(parquet: Path | None = None, *, strict: bool = True) -> set[st
         if name:
             names[person].add(name.strip())
     con.close()
-    cleared = {p for p in names if display_ok(p, strict=strict, parquet=pq)}
+    cleared = {p for p in names if nameable_seasons(p, parquet=pq)}
     cleared_names = {n.lower() for p in cleared for n in names[p]}
     blocked = set()
     for person, ns in names.items():

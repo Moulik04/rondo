@@ -73,6 +73,10 @@ Provider ids that share a person (one person under two ids within one provider):
 | Italian first division (`wyscout:524/181248`) | 686 | 93.1% | 93.1% | 43 | 4 |
 | Spanish first division (`wyscout:795/181144`) | 619 | 86.8% | 97.9% | 8 | 5 |
 
-## The strict reading of rule 5
+## Rule 5, read per season
 
-People who were minors in at least one covered competition-season: 188. Of those, 73 are verified adults in at least one other covered competition-season: they could be named in output about those seasons under a per-season reading, and are never named under the strict reading Rondo applies now.
+People who were minors in at least one covered competition-season: 188. Of those, 73 are verified adults in at least one other covered competition-season: they may be named in output about those seasons only, never about the seasons when they were minors.
+
+## Hand check of the links
+
+Links marked by hand: 20 (0 older marks no longer match a link). Correct: 20. Precision on the marked links: 100.0%; exact one-sided 95% lower bound: 86.1%. The target is at least 98%; a sample of 20 can't show that on its own, only that the links checked were right.

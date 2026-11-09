@@ -80,7 +80,7 @@ audit_id,provider,competition_season,provider_player_id,provider_name,wikidata,w
 79,wyscout,wyscout:28/10078,4814,A. Aguilar,https://www.wikidata.org/wiki/Q318416,Abel Aguilar,wikidata: team + dates + name + birth date,high,1.0,1,True,6192,True,
 80,wyscout,wyscout:364/181150,230883,Ayoze Pérez,https://www.wikidata.org/wiki/Q15427728,Ayoze Perez,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
 81,wyscout,wyscout:364/181150,15474,M. Hefele,https://www.wikidata.org/wiki/Q6831053,Michael Hefele,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
-82,wyscout,wyscout:364/181150,434159,[withheld: not cleared by display_ok],https://www.wikidata.org/wiki/Q24691038,[withheld: not cleared by display_ok],wikidata: team + dates + name + birth date,high,1.0,1,True,,False,
+82,wyscout,wyscout:364/181150,434159,S. Field,https://www.wikidata.org/wiki/Q24691038,Sam Field,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
 83,wyscout,wyscout:412/181189,25423,M. Biševac,https://www.wikidata.org/wiki/Q530033,Biševac,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
 84,wyscout,wyscout:412/181189,26016,B. Lecomte,https://www.wikidata.org/wiki/Q2070900,Benjamin Lecomte,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
 85,wyscout,wyscout:412/181189,118,M. Depay,https://www.wikidata.org/wiki/Q1894,Memphis Depay,wikidata: team + dates + name + birth date,high,1.0,1,True,,True,
