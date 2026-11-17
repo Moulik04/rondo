@@ -168,11 +168,12 @@ def totals_match_expected(ctx: Ctx) -> CheckResult:
 def events_belong_to_known_matches(ctx: Ctx) -> CheckResult:
     """Every event's match is in the matches table, and every match has events."""
     orphans = ctx.q(
-        "select match_id, count(*) from events anti join matches using (match_id) group by 1"
+        "select match_id, count(*) from events anti join matches using (match_id) "
+        "group by 1 order by 1"
     )
     empty = ctx.q(
         "select match_id from matches "
-        "anti join (select distinct match_id from events) using (match_id)"
+        "anti join (select distinct match_id from events) using (match_id) order by 1"
     )
     problems = [f"match {m}: {n} events with no match row" for m, n in orphans]
     problems += [f"match {m}: no events" for (m,) in empty]
@@ -187,7 +188,9 @@ def events_belong_to_known_matches(ctx: Ctx) -> CheckResult:
 @check
 def event_ids_unique(ctx: Ctx) -> CheckResult:
     """Event ids are unique across the whole corpus."""
-    dups = ctx.q("select event_id, count(*) from events group by 1 having count(*) > 1 limit 100")
+    dups = ctx.q(
+        "select event_id, count(*) from events group by 1 having count(*) > 1 order by 1 limit 100"
+    )
     return _result(
         "event_ids_unique",
         "Event ids are unique.",
@@ -275,7 +278,7 @@ def team_minutes_match_length(ctx: Ctx) -> CheckResult:
         from t join len using (match_id)
         where abs(t.mins - (11 * len.len - t.red_loss)) > {TEAM_MINUTES_TOLERANCE}
            or t.starters <> 11
-        order by abs(t.mins - (11 * len.len - t.red_loss)) desc
+        order by abs(t.mins - (11 * len.len - t.red_loss)) desc, t.match_id, t.team_id
         """
     )
     n = ctx.one(
@@ -302,7 +305,7 @@ def no_player_for_both_teams(ctx: Ctx) -> CheckResult:
     for table in ("lineups", "player_match_minutes", "events"):
         for m, p in ctx.q(
             f"select match_id, player_id from {table} where player_id is not null "
-            "group by 1, 2 having count(distinct team_id) > 1"
+            "group by 1, 2 having count(distinct team_id) > 1 order by 1, 2"
         ):
             problems.append(f"{table}: player {p} for both teams in match {m}")
     return _result(
@@ -336,7 +339,7 @@ def non_penalty_shots_have_freeze_frames(ctx: Ctx) -> CheckResult:
     """Every non-penalty shot has a freeze frame; exceptions listed."""
     rows = ctx.q(
         "select match_id, event_id, shot_type, period from shots "
-        "where not is_penalty and not has_freeze_frame order by match_id"
+        "where not is_penalty and not has_freeze_frame order by match_id, event_id"
     )
     n = ctx.one("select count(*) from shots where not is_penalty")
     return _result(
@@ -389,7 +392,8 @@ def frames_360_belong_to_events(ctx: Ctx) -> CheckResult:
 def visible_areas_are_valid_polygons(ctx: Ctx) -> CheckResult:
     """Each 360 visible area is a valid polygon (shapely ``is_valid``); exceptions listed."""
     rows = ctx.q(
-        "select match_id, event_id, n_points from visible_areas_360 where not is_valid order by 1"
+        "select match_id, event_id, n_points from visible_areas_360 where not is_valid "
+        "order by 1, 2"
     )
     total = ctx.one("select count(*) from visible_areas_360")
     return _result(
@@ -408,7 +412,7 @@ def frames_360_players_on_pitch(ctx: Ctx) -> CheckResult:
     rows = ctx.q(
         f"""select match_id, count(*) from frames_360
             where x < -{mg} or x > 120 + {mg} or y < -{mg} or y > 80 + {mg}
-            group by 1 order by 2 desc"""
+            group by 1 order by 2 desc, 1"""
     )
     total = ctx.one("select count(*) from frames_360")
     bad = sum(n for _, n in rows)
@@ -757,7 +761,7 @@ def wy_coordinates_convert(ctx: Ctx) -> CheckResult:
            where a.type_name not in ('goalkick', 'keeper_save')
              and (abs(a.start_x - e.x * 1.05) > 0.01
                   or abs(a.start_y - (100 - e.y) * 0.68) > 0.01)
-           group by 1"""
+           group by 1 order by 1"""
     )
     corners = ctx.q(
         """select count(*), count(*) filter (where not (x >= 95 and (y <= 5 or y >= 95)))
@@ -869,9 +873,10 @@ def tracking_frames_at_25hz(ctx: Ctx) -> CheckResult:
                         time_s - lag(time_s) over w as dt
                  from t window w as (partition by match_id, period order by frame))
            select match_id, period, count(*) from d
-           where df is not null and (df <> 1 or abs(dt - 0.04) > 1e-6) group by 1, 2"""
+           where df is not null and (df <> 1 or abs(dt - 0.04) > 1e-6)
+           group by 1, 2 order by 1, 2"""
     )
-    rate = ctx.q("select distinct frame_rate from tracking_meta")
+    rate = ctx.q("select distinct frame_rate from tracking_meta order by 1")
     problems = [f"{m} period {p}: {n} irregular steps" for m, p, n in rows]
     problems += [f"frame rate {r} in metadata" for (r,) in rate if r != 25]
     return _result(name, desc, problems, "frame spacing checked in every period")
@@ -975,7 +980,8 @@ def same_match_links_agree(ctx: Ctx) -> CheckResult:
              on a.provider = 'statsbomb' and b.provider = 'wyscout'
             and a.same_match_partner = b.provider_player_id
             and b.same_match_partner = a.provider_player_id
-           where a.qid is not null and b.qid is not null"""
+           where a.qid is not null and b.qid is not null
+           order by 1, 2"""
     )
     bad = [f"StatsBomb {a} -> {qa}, Wyscout {b} -> {qb}" for a, b, qa, qb in rows if qa != qb]
     n = len(rows)
@@ -1103,11 +1109,12 @@ def info_tables(ctx: Ctx) -> dict[str, list[tuple]]:
             """select e.type_name, count(*) from events e
                anti join (select original_event_id as event_id from spadl_actions
                           where provider = 'statsbomb') a using (event_id)
-               group by 1 order by 2 desc"""
+               group by 1 order by 2 desc, 1"""
         ),
         "SPADL actions with no source event, by type (inserted by socceraction)": ctx.q(
             """select type_name, count(*) from spadl_actions
-               where provider = 'statsbomb' and original_event_id is null group by 1"""
+               where provider = 'statsbomb' and original_event_id is null
+               group by 1 order by 2 desc, 1"""
         ),
         "lineup spells ending before they start on the match clock (spells, matches)": ctx.q(
             """select count(*), count(distinct match_id) from lineup_positions
@@ -1117,7 +1124,7 @@ def info_tables(ctx: Ctx) -> dict[str, list[tuple]]:
         ),
         "defensive actions with no success flag, by action": ctx.q(
             """select action, count(*) from defensive_actions where is_success is null
-               group by 1 order by 2 desc"""
+               group by 1 order by 2 desc, 1"""
         ),
     }
 

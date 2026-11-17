@@ -144,9 +144,9 @@ Exceptions (first 25 of 298):
 - match 3869118: 86 locations outside
 - match 3788775: 84 locations outside
 - match 3857255: 80 locations outside
+- match 3795107: 79 locations outside
 - match 3795109: 79 locations outside
 - match 3869552: 79 locations outside
-- match 3795107: 79 locations outside
 - match 3802685: 77 locations outside
 - match 3857289: 76 locations outside
 - match 3869354: 76 locations outside
@@ -159,7 +159,7 @@ Exceptions (first 25 of 298):
 - match 3869151: 69 locations outside
 - match 3802665: 68 locations outside
 - match 3794688: 67 locations outside
-- match 3795221: 66 locations outside
+- match 3794687: 66 locations outside
 
 ## spadl_goals_equal_score
 
@@ -328,8 +328,8 @@ No name of a player that core.public.display_ok doesn't clear appears in any tex
 - Goal Keeper | 50824
 - Pass | 19771
 - Substitution | 16520
-- Half Start | 10658
 - Half End | 10658
+- Half Start | 10658
 - Injury Stoppage | 10191
 - 50/50 | 7564
 - Tactical Shift | 6556
