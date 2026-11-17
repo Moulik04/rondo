@@ -48,7 +48,9 @@ class Store:
     real: bool
 
     def ctx(self):
-        return checks.Ctx(self.con, self.checkout, scope=self.scope, check_section_2=self.real)
+        return checks.Ctx(
+            self.con, self.checkout, scope=self.scope, check_expected_counts=self.real
+        )
 
 
 def write_synthetic_tracking(parquet: Path, frames_per_period: int = 100) -> None:

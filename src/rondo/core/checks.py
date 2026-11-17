@@ -64,7 +64,7 @@ class Ctx:
     con: duckdb.DuckDBPyConnection
     checkout: Path
     scope: tuple[sc.CompetitionSeason, ...] = sc.SCOPE
-    check_section_2: bool = True
+    check_expected_counts: bool = True
 
     def q(self, sql: str) -> list[tuple]:
         """Run SQL and return all rows."""
@@ -116,12 +116,16 @@ def match_counts_per_competition_season(ctx: Ctx) -> CheckResult:
         got = table.get((cs.competition_id, cs.season_id), 0)
         if got != raw:
             problems.append(f"{cs.competition_id}/{cs.season_id}: table {got}, matches file {raw}")
-        if ctx.check_section_2 and cs.expected_matches is not None and raw != cs.expected_matches:
+        if (
+            ctx.check_expected_counts
+            and cs.expected_matches is not None
+            and raw != cs.expected_matches
+        ):
             problems.append(
                 f"{cs.competition_id}/{cs.season_id}: file {raw}, expected {cs.expected_matches}"
             )
         groups[cs.group] = groups.get(cs.group, 0) + got
-    if ctx.check_section_2:
+    if ctx.check_expected_counts:
         for group, (n, _) in sc.EXPECTED_GROUP_TOTALS.items():
             if groups.get(group) != n:
                 problems.append(f"{group}: {groups.get(group)} matches, expected {n}")
@@ -136,14 +140,14 @@ def match_counts_per_competition_season(ctx: Ctx) -> CheckResult:
 
 
 @check
-def totals_match_section_2(ctx: Ctx) -> CheckResult:
+def totals_match_expected(ctx: Ctx) -> CheckResult:
     """Total and core match counts, and matches with 360 data, equal the expected counts."""
     total, n360, core, core360 = ctx.con.execute(
         "select count(*), sum(has_360::int), sum((scope='core')::int), "
         "sum((scope='core' and has_360)::int) from matches"
     ).fetchall()[0]
     problems = []
-    if ctx.check_section_2:
+    if ctx.check_expected_counts:
         for label, got, want in [
             ("matches", total, sc.EXPECTED_TOTAL_MATCHES),
             ("matches with 360", n360, sc.EXPECTED_TOTAL_360),
@@ -153,7 +157,7 @@ def totals_match_section_2(ctx: Ctx) -> CheckResult:
             if got != want:
                 problems.append(f"{label}: {got}, expected {want}")
     return _result(
-        "totals_match_section_2",
+        "totals_match_expected",
         "Total, core and 360 match counts equal the expected counts in core/scope.py.",
         problems,
         f"{total} matches ({n360} with 360); core {core} ({core360} with 360)",
@@ -581,7 +585,7 @@ def wy_counts_match_published(ctx: Ctx) -> CheckResult:
     )
     if not _has(ctx, "wy_matches", "wy_events", "wy_lineups"):
         return _skip(name, desc, "wy_* tables")
-    if not ctx.check_section_2:
+    if not ctx.check_expected_counts:
         return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
     got = {
         c: (m, e, p)
@@ -618,7 +622,7 @@ def wy_totals_match_expected(ctx: Ctx) -> CheckResult:
     )
     if not _has(ctx, "wy_matches", "wy_events", "wy_players", "wy_lineups"):
         return _skip(name, desc, "wy_* tables")
-    if not ctx.check_section_2:
+    if not ctx.check_expected_counts:
         return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
     m, e, pf, pl, bd = ctx.q(
         """select (select count(*) from wy_matches), (select count(*) from wy_events),
@@ -805,7 +809,7 @@ def match_xref_complete(ctx: Ctx) -> CheckResult:
     )
     if not _has(ctx, "match_xref"):
         return _skip(name, desc, "match_xref")
-    if not ctx.check_section_2:
+    if not ctx.check_expected_counts:
         return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
     n, sb, wy, score = ctx.q(
         "select count(*), count(distinct sb_match_id), count(distinct wy_match_id), "
@@ -834,7 +838,7 @@ def tracking_frames_match_published(ctx: Ctx) -> CheckResult:
     )
     if not _has(ctx, "tracking_frames", "tracking_meta"):
         return _skip(name, desc, "tracking tables")
-    if not ctx.check_section_2:
+    if not ctx.check_expected_counts:
         return CheckResult(name, desc, "SKIP", "published counts apply to the real data only")
     got = dict(
         ctx.q(
